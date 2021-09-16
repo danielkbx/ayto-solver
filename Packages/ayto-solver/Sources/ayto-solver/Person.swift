@@ -1,12 +1,19 @@
 import Foundation
 
-public struct Person: Equatable, Identifiable {
+public struct Person: Equatable, Identifiable, Hashable {
     
     public var id: String { return self.name.lowercased() }
         
     public enum Gender {
         case male
         case female
+        
+        public var other: Gender {
+            switch self {
+            case .female: return .male
+            case .male: return .female
+            }
+        }
     }
     
     public enum Role {

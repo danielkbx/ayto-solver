@@ -1,12 +1,17 @@
 import Foundation
 
-public struct Pair {
+public struct Pair: Equatable, Hashable {
     public let person1: Person
     public let person2: Person
     
     public init(_ person1: Person, _ person2: Person) {
-        self.person1 = person1
-        self.person2 = person2
+        guard person1.gender != person2.gender else { fatalError() }
+        self.person1 = person1.gender == .female ? person1 : person2
+        self.person2 = person2.gender == .male ? person2 : person1
+    }
+    
+    public func person(with gender: Person.Gender) -> Person {
+        return [self.person1, self.person2].first(where: { $0.gender == gender })!
     }
     
     public func contains(_ person: Person) -> Bool {
@@ -14,11 +19,15 @@ public struct Pair {
     }
     
     public func isImpossible(by match: Match) -> Bool {
+        if !match.contains(person1) && !match.contains(person2) {
+            return false
+        }
+        
         if match.isMatch {
             return match.pair.contains(person1) && !match.pair.contains(person2)
                 || match.pair.contains(person2) && !match.pair.contains(person1)
         } else {
-            return !(!match.pair.contains(person1) && !match.pair.contains(person2))
+            return match.pair.contains(person1) && match.pair.contains(person2)
         }
     }
     

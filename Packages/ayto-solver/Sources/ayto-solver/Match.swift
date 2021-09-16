@@ -1,6 +1,11 @@
 import Foundation
 
-public struct Match {
+public struct Match: Identifiable, Equatable, Hashable {
+    
+    public static func == (lhs: Match, rhs: Match) -> Bool { lhs.id == rhs.id }
+        
+    public var id: String { "\(pair.person1.name.lowercased())-\(pair.person2.name.lowercased())-\(isMatch)" }
+                
     public let pair: Pair
     public let isMatch: Bool
     
@@ -20,4 +25,12 @@ public struct Match {
     public func contains(_ person: Person) -> Bool {
         pair.contains(person)
     }
+}
+
+public extension Sequence where Element == Match {
+    
+    func match(with person1: Person, and person2: Person) -> Match? {
+        self.first(where: { $0.contains(person1) && $0.contains(person2) })
+    }
+    
 }
