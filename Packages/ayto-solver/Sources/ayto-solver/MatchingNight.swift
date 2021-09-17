@@ -3,6 +3,10 @@ import Logging
 
 public struct MatchingNight {
     
+    enum DeduceError: Error {
+        case matchesExceedHits
+    }
+    
     public let pairs: [Pair]
     public let hits: Int
     
@@ -11,9 +15,8 @@ public struct MatchingNight {
         self.hits = hits
     }
     
-    public func deducedMatches(by knownMatches: [Match], logger: Logger? = nil) -> [Match] {
+    internal func deducedMatches(by knownMatches: [Match], logger: Logger? = nil) throws -> [Match] {
         logger?.debug("Deducing from matching night", metadata: ["hits": "\(self.hits)", "matches": "\(knownMatches.count)"])
-        var matches = knownMatches
         
         var impossibleMatches: [Match] = []
         var safeMatches: [Match] = []
@@ -27,7 +30,16 @@ public struct MatchingNight {
             }
         }
         
-        if safeMatches.count < hits, impossibleMatches.count + hits == pairs.count {
+        if safeMatches.count > hits {
+            throw DeduceError.matchesExceedHits
+        } else if safeMatches.count == hits {
+            // all other pairs must be fails
+            for pair in pairs {
+                if safeMatches.match(with: pair.person1, and: pair.person2) == nil {
+                    impossibleMatches.append(Match.noMatch(pair.person1, pair.person2))
+                }
+            }
+        } else if safeMatches.count < hits, impossibleMatches.count + hits == pairs.count {
             // all not impossible matches must be hits
             let newHitPairs = pairs.filter { !impossibleMatches.map({ $0.pair }) .contains($0) }
             for pair in newHitPairs {
@@ -36,7 +48,7 @@ public struct MatchingNight {
             }
         }
         
-        matches = Array(Set(knownMatches + impossibleMatches + safeMatches))
-        return matches
+        let allMatches = knownMatches + impossibleMatches + safeMatches
+        return try allMatches.unique()
     }
 }

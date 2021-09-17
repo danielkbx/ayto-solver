@@ -32,49 +32,53 @@ let persons: [Person] = [kathleen, aurelia, steffi, jacky, walentina, sara, jill
 
 var knownMatches: [Match] = [
     Match.match(jules, francesco),
-    Match.match(josua, aurelia),
-    Match.noMatch(melina, tommy)
 ]
 
 let nights: [MatchingNight] = [
     MatchingNight(pairs: [
-        Pair(kathleen, manuel),
-        Pair(aurelia, diogo),
         Pair(steffi, danilo),
-        Pair(jacky, salvatore),
-        Pair(walentina, eugen),
-        Pair(sara, josua),
         Pair(jill, jamy),
+        Pair(melina, tommy),
+        Pair(aurelia, diogo),
+        Pair(walentina, eugen),
+        Pair(kathleen, manuel),
         Pair(finnja, francesco),
-        Pair(jules, alex),
-        Pair(melina, tommy)
+        Pair(jacky, salvatore),
+        Pair(sara, josua),
+        Pair(jules, alex)
     ], hits: 3)
 ]
 
 let game = Game(persons: persons, knownMatches: knownMatches, nights: nights)
 
-let solution = game.solve(logger: logger)
-
-for i in 0 ..< nights.count {
-    let night = nights[i]
-    print("Night \(i+1)")
-    print("---------------------")
-    night.pairs.forEach {
-        let indicator: String
-        if $0.isImpossible(by: solution.matches) {
-            indicator = "❌"
-        } else if $0.isMatch(by: solution.matches) {
-            indicator = "✅"
-        } else {
-            indicator = "🔵"
+do {
+    let solution = try game.solve(logger: logger)
+    
+    for i in 0 ..< nights.count {
+        let night = nights[i]
+        print("Night \(i+1)")
+        print("---------------------")
+        night.pairs.forEach {
+            let indicator: String
+            if $0.isImpossible(by: solution.allMatches) {
+                indicator = "❌"
+            } else if $0.isMatch(by: solution.allMatches) {
+                indicator = "✅"
+            } else {
+                indicator = "🔵"
+            }
+            print(" \(indicator) \($0.person1.name) - \($0.person2.name)")
         }
-        print(" \(indicator) \($0.person1.name) - \($0.person2.name)")
+        print("---------------------")
+        print("\(night.hits) hits\n\n")
     }
-    print("---------------------")
-    print("\(night.hits) hits\n\n")
+    
+    print("Solution:")
+    for match in solution.allMatches.filter({ $0.isMatch }) {
+        print("- \(match.pair.person1.name) & \(match.pair.person2.name)")
+    }
+    
+} catch {
+    
 }
 
-print("Solution:")
-for match in solution.matches.filter({ $0.isMatch }) {
-    print("- \(match.pair.person1.name) & \(match.pair.person2.name)")
-}

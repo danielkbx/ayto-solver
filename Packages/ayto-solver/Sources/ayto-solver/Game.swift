@@ -13,41 +13,40 @@ public class Game {
         self.matchingNights = nights
     }
     
-    public func solve(logger: Logger? = nil) -> Solution {
+    public func solve(logger: Logger? = nil) throws -> Solution {
                                 
         var didDeduceSomething: Bool = false
         repeat {
             didDeduceSomething = false
             
-            let eliminatedMatches = eliminatePersons(by: self.knownMatches, logger: logger)
+            let eliminatedMatches = try eliminatePersons(logger: logger)
             if eliminatedMatches.count > self.knownMatches.count {
                 didDeduceSomething = true
-                self.knownMatches = eliminatedMatches                
                 continue
             }
             
-            let nominatedMatches = nomateSingleLeftOver(by: self.knownMatches, logger: logger)
+            let nominatedMatches = try nomateSingleLeftOver(logger: logger)
             if nominatedMatches.count > self.knownMatches.count {
                 didDeduceSomething = true
-                self.knownMatches = nominatedMatches
                 continue
             }
             
             for night in self.matchingNights.sorted(by: { $0.hits < $1.hits }) {
-                let deducedMatches = night.deducedMatches(by: self.knownMatches, logger: logger)
+                let deducedMatches = try night.deducedMatches(by: self.knownMatches, logger: logger)
                 if deducedMatches.count > knownMatches.count {
-                    didDeduceSomething = true
                     self.knownMatches = deducedMatches
+                    didDeduceSomething = true
                     continue
                 }
 
             }
         } while didDeduceSomething
         
-        return Game.Solution(matches: knownMatches)
+        return Game.Solution(allMatches: knownMatches)
     }
     
-    private func eliminatePersons(by knownMatches: [Match], logger: Logger? = nil) -> [Match] {
+    @discardableResult
+    internal func eliminatePersons(logger: Logger? = nil) throws -> [Match] {
         let matches = knownMatches.filter { $0.isMatch }
         
         var eliminatedMatches: [Match] = []
@@ -64,11 +63,12 @@ public class Game {
             }
         }
         
-        let allMatches = eliminatedMatches + knownMatches        
-        return Array(Set(allMatches))
+        self.knownMatches = try (eliminatedMatches + knownMatches).unique()
+        return self.knownMatches
     }
     
-    private func nomateSingleLeftOver(by knownMatches: [Match], logger: Logger? = nil) -> [Match] {
+    @discardableResult
+    internal func nomateSingleLeftOver(logger: Logger? = nil) throws -> [Match] {
         var matches = knownMatches
         for person in self.persons {
             let matchesForPerson = knownMatches.filter { $0.contains(person) }
@@ -85,14 +85,17 @@ public class Game {
             }
         }
         
-        return matches
+        self.knownMatches = try matches.unique()
+        return self.knownMatches
     }
 }
 
 public extension Game {
     
     struct Solution {
-        public let matches: [Match]
+        public let allMatches: [Match]
+        
+        public var matches: [Match] { allMatches.filter { $0.isMatch } }
     }
     
 }

@@ -46,4 +46,8 @@ public extension Sequence where Element == Person {
         self.first(where: {$0.name == name})
     }
     
+    func unique() -> [Person] {
+        Array(Set(self))
+    }
+    
 }
