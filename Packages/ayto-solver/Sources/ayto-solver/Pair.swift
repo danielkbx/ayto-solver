@@ -1,8 +1,13 @@
 import Foundation
 
 public struct Pair: Equatable, Hashable {
+    public enum ContainmentError: Error {
+        case doesNotContain(person: Person)
+    }
+    
     public let person1: Person
     public let person2: Person
+    public var persons: [Person] { [person1, person2] }
     
     public init(_ person1: Person, _ person2: Person) {
         guard person1.gender != person2.gender else { fatalError() }
@@ -16,6 +21,14 @@ public struct Pair: Equatable, Hashable {
     
     public func contains(_ person: Person) -> Bool {
         self.person1 == person || self.person2 == person
+    }
+    
+    public func not(person: Person) throws -> Person {
+        guard self.contains(person) else {
+            throw ContainmentError.doesNotContain(person: person)
+        }
+        
+        return (self.person1 == person) ? person2 : person1
     }
     
     public func isImpossible(by match: Match) -> Bool {

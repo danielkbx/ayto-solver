@@ -24,6 +24,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		653F0CB026FCCDFC0086B30E /* season2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = season2.json; sourceTree = "<group>"; };
 		658F0F0226F0A05B0067B9AA /* ayto */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ayto; sourceTree = BUILT_PRODUCTS_DIR; };
 		658F0F0526F0A05B0067B9AA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		658F0F0C26F0A08D0067B9AA /* ayto-solver */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ayto-solver"; path = "../Packages/ayto-solver"; sourceTree = "<group>"; };
@@ -63,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				658F0F0526F0A05B0067B9AA /* main.swift */,
+				653F0CB026FCCDFC0086B30E /* season2.json */,
 			);
 			path = ayto;
 			sourceTree = "<group>";

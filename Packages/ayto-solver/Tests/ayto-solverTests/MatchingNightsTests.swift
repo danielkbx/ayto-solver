@@ -13,7 +13,9 @@
             
             let knownMatches = [Match.noMatch(personA1, personB1), Match.noMatch(personA2, personB2)]
             
-            let night = MatchingNight(pairs: [Pair(personA1, personB1), Pair(personA2, personB2), Pair(personA3, personB3)], hits: 1)
+            let night = MatchingNight(title: "Test Night",
+                                      pairs: [Pair(personA1, personB1), Pair(personA2, personB2), Pair(personA3, personB3)],
+                                      hits: 1)
                         
             let matches = try night.deducedMatches(by: knownMatches).filter { $0.isMatch }
             
@@ -32,14 +34,16 @@
             
             let knownMatches = [Match.match(personA1, personB1), Match.match(personA2, personB2)]
             
-            let night = MatchingNight(pairs: [Pair(personA1, personB1), Pair(personA2, personB2), Pair(personA3, personB3)], hits: 2)
+            let night = MatchingNight(title: "Test Night",
+                                      pairs: [Pair(personA1, personB1), Pair(personA2, personB2), Pair(personA3, personB3)],
+                                      hits: 2)
                         
             let allMatches = try night.deducedMatches(by: knownMatches)
             let matches = allMatches.filter { $0.isMatch }
             XCTAssertEqual(matches.count, 2)
             
             let noMatches = allMatches.filter { !$0.isMatch }
-            XCTAssertNotNil(noMatches.match(with: personA3, and: personB3))
+            XCTAssertNotNil(noMatches.matches(with: personA3, and: personB3).first)
         }
         
     }

@@ -43,6 +43,47 @@ final class MatchesTests: XCTestCase {
         XCTAssertEqual(matches.matches(containingPersonsOf: Pair(personA2, personB1)).count, 3)
     }
     
+    func test_containsAnyOf() {
+        let personA1 = Person(regularPerson: "A1", gender: .female)
+        let personA2 = Person(regularPerson: "A2", gender: .female)
+        let personA3 = Person(regularPerson: "A3", gender: .female)
+        let personB1 = Person(regularPerson: "B1", gender: .male)
+        let personB2 = Person(regularPerson: "B2", gender: .male)
+        let personB3 = Person(regularPerson: "B3", gender: .male)
+        let matches = [
+            Match.noMatch(personA1, personB1),
+            Match.noMatch(personA2, personB1),
+            Match.noMatch(personA3, personB1),
+            Match.noMatch(personA1, personB2),
+            Match.noMatch(personA2, personB2),
+        ]
+        
+        XCTAssertEqual(matches.matches(with: [personA1, personA2, personA3]).count, 5)
+        XCTAssertEqual(matches.matches(with: [personA3]).count, 1)
+        XCTAssertEqual(matches.matches(with: [personB3]).count, 0)
+    }
+    
+    func test_safeMatches() {
+        let personA1 = Person(regularPerson: "A1", gender: .female)
+        let personB1 = Person(regularPerson: "B1", gender: .male)
+        let personA2 = Person(regularPerson: "A2", gender: .female)
+        let personB2 = Person(regularPerson: "B2", gender: .male)
+        let matches = [
+            Match.match(personA1, personB1),
+            Match.match(personA2, personB2),
+            Match.noMatch(personA1, personB2),
+            Match.noMatch(personA1, personB1),
+        ]
+        
+        let safeMatches = matches.safeMatches()
+        
+        XCTAssertEqual(safeMatches.count, 2)
+        XCTAssertTrue(safeMatches.first!.contains(personA1))
+        XCTAssertTrue(safeMatches.first!.contains(personB1))
+        XCTAssertTrue(safeMatches.last!.contains(personA2))
+        XCTAssertTrue(safeMatches.last!.contains(personB2))
+    }
+    
     func test_unique_makesUnique() {
         let personA1 = Person(regularPerson: "A1", gender: .female)
         let personB1 = Person(regularPerson: "B1", gender: .male)
@@ -70,6 +111,7 @@ final class MatchesTests: XCTestCase {
         let matches = [
             Match.match(personA1, personB1),
             Match.noMatch(personA1, personB1),
+            
             Match.match(personA2, personB2),
         ]
         
@@ -89,26 +131,6 @@ final class MatchesTests: XCTestCase {
             }
         }
     }
-    
-    func test_unique_doesNotDetectsConflicts_aboutPair_withExtra() {
-        let personA1 = Person(extraPerson: "A1", gender: .female)
-        let personB1 = Person(regularPerson: "B1", gender: .male)
-        let personA2 = Person(regularPerson: "A2", gender: .female)
-        let personB2 = Person(regularPerson: "B2", gender: .male)
-        let matches = [
-            Match.match(personA1, personB1),
-            Match.noMatch(personA2, personB2),
-            Match.match(personA1, personB2),
-        ]
-        
-        do {
-            let unique = try matches.unique()
-            XCTAssertEqual(unique.count, 3)
-        } catch {
-            XCTAssertTrue(false) // there is an error
-        }
-    }
-    
     
     func test_unique_detectsConflicts_contradictoryMatches() {
         let personA1 = Person(regularPerson: "A1", gender: .female)
@@ -140,20 +162,47 @@ final class MatchesTests: XCTestCase {
         }
     }
     
-    func test_unique_doesNotDetectsConflicts_contradictoryMatches_withExtra() {
+    func test_unique_detectsConflicts_contradictoryMatches_withExtra() {
         let personA1 = Person(extraPerson: "A1", gender: .female)
-        let personA2 = Person(regularPerson: "A2", gender: .female)
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
         let matches = [
             Match.match(personA1, personB1),
-            Match.noMatch(personA2, personB2),
             Match.match(personA1, personB2),
         ]
         
         do {
-            let matches = try matches.unique()
-            XCTAssertEqual(matches.count, 3)
+            let _ = try matches.unique()
+            XCTAssertTrue(false) // this should have thrown an error
+        } catch {
+            let error = error as? Match.UniqueError
+            XCTAssertNotNil(error)
+            
+            switch error {
+            case .contradictory(let matches):
+                XCTAssertEqual(matches.count, 2)
+            default:
+                XCTAssertTrue(false)
+            }
+        }
+    }
+    
+    func test_unique_doesNotDetectsConflicts_contradictoryMatches_withExtra() {
+        let personA1 = Person(extraPerson: "A1", gender: .female)
+        let personB1 = Person(regularPerson: "B1", gender: .male)
+        let personA2 = Person(regularPerson: "A2", gender: .female)
+        let personB2 = Person(regularPerson: "B2", gender: .male)
+        // an extra person can be an additional match for one person of the other gender
+        let matches = [
+            Match.match(personA1, personB1),
+            Match.match(personA2, personB1),
+            
+            Match.noMatch(personA2, personB2)
+        ]
+        
+        do {
+            let unique = try matches.unique()
+            XCTAssertEqual(unique.count, 3)
         } catch {
             XCTAssertTrue(false) // there is an error
         }

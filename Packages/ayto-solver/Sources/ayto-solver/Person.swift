@@ -2,9 +2,9 @@ import Foundation
 
 public struct Person: Equatable, Identifiable, Hashable {
     
-    public var id: String { return self.name.lowercased() }
+    private(set) public var id: String
         
-    public enum Gender {
+    public enum Gender: String, Codable {
         case male
         case female
         
@@ -16,7 +16,7 @@ public struct Person: Equatable, Identifiable, Hashable {
         }
     }
     
-    public enum Role {
+    public enum Role: String, Codable {
         case regular
         case extra
     }
@@ -29,6 +29,7 @@ public struct Person: Equatable, Identifiable, Hashable {
         self.name = name
         self.gender = gender
         self.role = role
+        self.id = [name.lowercased(), "\(gender)", "\(role)"].joined(separator: "-")
     }
     
     public init(regularPerson name: String, gender: Gender) {
@@ -48,6 +49,18 @@ public extension Sequence where Element == Person {
     
     func unique() -> [Person] {
         Array(Set(self))
+    }
+    
+    func with(role: Person.Role) -> [Person] {
+        filter { $0.role == role }
+    }
+    
+    func with(gender: Person.Gender) -> [Person] {
+        filter{ $0.gender == gender }
+    }
+    
+    func numberOfPersons(withRole role: Person.Role) -> Int {
+        with(role: role).count
     }
     
 }

@@ -7,10 +7,12 @@ public struct MatchingNight {
         case matchesExceedHits
     }
     
+    public let title: String
     public let pairs: [Pair]
     public let hits: Int
     
-    public init(pairs: [Pair], hits: Int) {
+    public init(title: String, pairs: [Pair], hits: Int) {
+        self.title = title
         self.pairs = pairs
         self.hits = hits
     }
@@ -35,7 +37,7 @@ public struct MatchingNight {
         } else if safeMatches.count == hits {
             // all other pairs must be fails
             for pair in pairs {
-                if safeMatches.match(with: pair.person1, and: pair.person2) == nil {
+                if safeMatches.matches(with: pair.person1, and: pair.person2).first == nil {
                     impossibleMatches.append(Match.noMatch(pair.person1, pair.person2))
                 }
             }
