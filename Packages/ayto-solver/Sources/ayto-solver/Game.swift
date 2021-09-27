@@ -22,36 +22,37 @@ public class Game {
     
     public func solve(logger: Logger? = nil) throws -> Solution {
         
+        var loops = 0
         var didDeduceSomething: Bool = false
         repeat {
             didDeduceSomething = false
+            loops += 1
             
             let eliminatedMatches = try eliminatePersons(logger: logger)
-            if eliminatedMatches.count > self.knownMatches.count {
+            if eliminatedMatches.count > 0 {
                 didDeduceSomething = true
-                continue
             }
             
-            let nominatedMatches = try nomateSingleLeftOver(logger: logger)
-            if nominatedMatches.count > self.knownMatches.count {
+            let nominatedMatches = try nominateSingleLeftOver(logger: logger)
+            if nominatedMatches.count > 0 {
                 didDeduceSomething = true
-                continue
             }
             
             for night in self.matchingNights.sorted(by: { $0.hits < $1.hits }) {
                 let deducedMatches = try night.deducedMatches(by: self.knownMatches, logger: logger)
                 if deducedMatches.count > knownMatches.count {
-                    self.knownMatches = deducedMatches
+                    self.knownMatches = try deducedMatches.unique()
                     didDeduceSomething = true
-                    continue
                 }
             }
+            
+            if try self.matchLastPair().count > 0 {
+                didDeduceSomething = true
+            }
                                                 
-        } while didDeduceSomething
-        
-        try self.matchLastPair()
-        
-        return Game.Solution(allMatches: knownMatches)
+        } while didDeduceSomething && loops <= 100
+                        
+        return Game.Solution(allMatches: knownMatches, calculationLoops: loops)
     }
     
     @discardableResult
@@ -67,6 +68,7 @@ public class Game {
                 if partner.role != .extra {
                     for noMatchPerson in self.persons.filter({ $0.gender == person.gender.other && $0.role == .regular }) {
                         guard !match.contains(noMatchPerson) else { continue }
+                        if self.knownMatches.matches(with: person, and: noMatchPerson).count > 0 { continue }
                         logger?.debug("Creating no match", metadata: ["for": "\(noMatchPerson.name)", "from": "\(person.name)"])
                         eliminatedMatches.append(Match.noMatch(person, noMatchPerson))
                     }
@@ -74,16 +76,17 @@ public class Game {
             }
         }
         
-        self.knownMatches = try (eliminatedMatches + knownMatches).unique()
-        return self.knownMatches
+        self.knownMatches = try (eliminatedMatches + self.knownMatches).unique()
+        return eliminatedMatches
     }
     
     @discardableResult
-    internal func nomateSingleLeftOver(logger: Logger? = nil) throws -> [Match] {
+    internal func nominateSingleLeftOver(logger: Logger? = nil) throws -> [Match] {
         guard self.persons.with(gender: .male).with(role: .regular).count == self.persons.with(gender: .female).with(role: .regular).count else {
             throw Game.ConstrainsError.personsGenderNotBalanced
         }
         
+        var nominatedLeftOverMatches: [Match] = []
         var matches = knownMatches
         
         for person in self.persons {
@@ -110,17 +113,20 @@ public class Game {
             if leftOverPersons.count == 1 {
                 let leftOverPerson = leftOverPersons.first!
                 logger?.debug("Only one person left to match", metadata: ["person": "\(leftOverPerson.name)", "for": "\(person.name)"])
-                matches.append(Match.match(person, leftOverPerson))
+                let newMatch = Match.match(person, leftOverPerson)
+                matches.append(newMatch)
+                nominatedLeftOverMatches.append(newMatch)
             }                        
         }
               
         self.knownMatches = try matches.unique()
-        return self.knownMatches
+        return nominatedLeftOverMatches
     }
     
     @discardableResult
     public func matchLastPair() throws -> [Match] {
         var matches = self.knownMatches
+        var lastPairMatches: [Match] = []
         
         var femalePersons = self.persons.with(gender: .female).with(role: .regular)
         var malePersons = self.persons.with(gender: .male).with(role: .regular)
@@ -137,11 +143,13 @@ public class Game {
         }
         
         if femalePersons.count == 1 && malePersons.count == 1 {
-            matches.append(Match.match(femalePersons.first!, malePersons.first!))
+            let newMatch = Match.match(femalePersons.first!, malePersons.first!)
+            matches.append(newMatch)
+            lastPairMatches.append(newMatch)
         }
         
         self.knownMatches = try matches.unique()
-        return self.knownMatches
+        return lastPairMatches
     }
 }
 
@@ -149,8 +157,8 @@ public extension Game {
     
     struct Solution {
         public let allMatches: [Match]
-        
         public var matches: [Match] { allMatches.filter { $0.isMatch } }
+        public let calculationLoops: Int
     }
     
 }

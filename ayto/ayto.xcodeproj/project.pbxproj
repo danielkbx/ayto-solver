@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		653F0CB2270242430086B30E /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653F0CB1270242430086B30E /* Table.swift */; };
 		658F0F0626F0A05B0067B9AA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658F0F0526F0A05B0067B9AA /* main.swift */; };
 		658F0F0F26F0A23C0067B9AA /* ayto-solver in Frameworks */ = {isa = PBXBuildFile; productRef = 658F0F0E26F0A23C0067B9AA /* ayto-solver */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		653F0CB026FCCDFC0086B30E /* season2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = season2.json; sourceTree = "<group>"; };
+		653F0CB1270242430086B30E /* Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Table.swift; sourceTree = "<group>"; };
 		658F0F0226F0A05B0067B9AA /* ayto */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ayto; sourceTree = BUILT_PRODUCTS_DIR; };
 		658F0F0526F0A05B0067B9AA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		658F0F0C26F0A08D0067B9AA /* ayto-solver */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ayto-solver"; path = "../Packages/ayto-solver"; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			children = (
 				658F0F0526F0A05B0067B9AA /* main.swift */,
 				653F0CB026FCCDFC0086B30E /* season2.json */,
+				653F0CB1270242430086B30E /* Table.swift */,
 			);
 			path = ayto;
 			sourceTree = "<group>";
@@ -122,6 +125,8 @@
 				Base,
 			);
 			mainGroup = 658F0EF926F0A05B0067B9AA;
+			packageReferences = (
+			);
 			productRefGroup = 658F0F0326F0A05B0067B9AA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -136,6 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				653F0CB2270242430086B30E /* Table.swift in Sources */,
 				658F0F0626F0A05B0067B9AA /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -14,7 +14,7 @@ final class GameTests: XCTestCase {
                        nights: [])
         
         
-        XCTAssertThrowsError(try sut.nomateSingleLeftOver())
+        XCTAssertThrowsError(try sut.nominateSingleLeftOver())
     }
         
     func test_nomination_leftOvers() throws {
@@ -30,7 +30,8 @@ final class GameTests: XCTestCase {
                        nights: [])
         
         
-        let matches = try sut.nomateSingleLeftOver()
+        try sut.nominateSingleLeftOver()
+        let matches = sut.knownMatches
         
         XCTAssertEqual(matches.count, 3)
         
@@ -58,7 +59,8 @@ final class GameTests: XCTestCase {
         // there is only one regular person left, so it must be nominated
         // The now only left-over is an extra, so it can be nominated too
         
-        let matches = try sut.nomateSingleLeftOver()
+        try sut.nominateSingleLeftOver()
+        let matches = sut.knownMatches
         
         // there is only one additional match
         XCTAssertEqual(matches.count, 3)
@@ -83,7 +85,8 @@ final class GameTests: XCTestCase {
                         [Match.noMatch(personA1, personB1)],
                        nights: [])
         
-        let matches = try sut.nomateSingleLeftOver()
+        try sut.nominateSingleLeftOver()
+        let matches = sut.knownMatches
         
         // there is only one additional match
         XCTAssertEqual(matches.count, 2)
@@ -104,14 +107,16 @@ final class GameTests: XCTestCase {
                        knownMatches: [Match.match(personA1, personB1)],
                        nights: [])
         
-        let matches = try sut.eliminatePersons()
+        try sut.eliminatePersons()
+        let matches = sut.knownMatches
         
         XCTAssertEqual(matches.count, 3)
         XCTAssertTrue(matches.matches(with: personA1, and: personB1).first!.isMatch)
         XCTAssertFalse(matches.matches(with: personA1, and: personB2).first!.isMatch)
         XCTAssertFalse(matches.matches(with: personA2, and: personB1).first!.isMatch)
         
-        let finalMatches = try sut.nomateSingleLeftOver()
+        try sut.nominateSingleLeftOver()
+        let finalMatches = sut.knownMatches
         XCTAssertEqual(finalMatches.count, 4)
     }
     
@@ -126,14 +131,16 @@ final class GameTests: XCTestCase {
                        knownMatches: [Match.match(personA1, personB1)],
                        nights: [])
         
-        let matches = try sut.eliminatePersons()
+        try sut.eliminatePersons()
+        let matches = sut.knownMatches
         
         XCTAssertEqual(matches.count, 3)
         XCTAssertTrue(matches.matches(with: personA1, and: personB1).first!.isMatch)
         XCTAssertFalse(matches.matches(with: personA1, and: personB2).first!.isMatch)
         XCTAssertFalse(matches.matches(with: personA2, and: personB1).first!.isMatch)
         
-        let finalMatches = try sut.nomateSingleLeftOver()
+        try sut.nominateSingleLeftOver()
+        let finalMatches = sut.knownMatches
         XCTAssertEqual(finalMatches.count, 4)
     }
     
@@ -148,13 +155,15 @@ final class GameTests: XCTestCase {
                        knownMatches: [Match.match(personA3, personB1)],
                        nights: [])
         
-        let matches = try sut.eliminatePersons()
+        try sut.eliminatePersons()
+        let matches = sut.knownMatches
         
         XCTAssertEqual(matches.count, 2)
         XCTAssertTrue(matches.matches(with: personA3, and: personB1).first!.isMatch)
         XCTAssertFalse(matches.matches(with: personA3, and: personB2).first!.isMatch)
                 
-        let finalMatches = try sut.nomateSingleLeftOver()
+        try sut.nominateSingleLeftOver()
+        let finalMatches = sut.knownMatches
         XCTAssertEqual(finalMatches.count, 2) // there is no new data in here
     }
     
@@ -171,7 +180,8 @@ final class GameTests: XCTestCase {
                        nights: [])
         
         try sut.eliminatePersons()
-        let matches = try sut.nomateSingleLeftOver()
+        try sut.nominateSingleLeftOver()
+        let matches = sut.knownMatches
                 
         XCTAssertEqual(matches.count, 9)
         XCTAssertTrue(matches.matches(with: personA1, and: personB1).first!.isMatch)
