@@ -7,6 +7,13 @@ public class Table {
     struct Cell {
         let address: Address
         let value: String
+        let color: ASCIIColor?
+        
+        public init(address: Address, value: String, color: ASCIIColor? = nil) {
+            self.address = address
+            self.value = value
+            self.color = color
+        }
     }
     
     public struct Captions {
@@ -42,15 +49,15 @@ public class Table {
         values.cell(at: address)?.value
     }
     
-    public func set(value: String?, at address: Address) {
+    public func set(value: String?, at address: Address, color: ASCIIColor? = nil) {
         remove(cellAt: address)
         
         if let newValue = value {
-            values.append(Cell(address:address, value: newValue))
+            values.append(Cell(address:address, value: newValue, color: color))
         }
     }
             
-    public func stringValue(header: Captions? = nil) -> String {
+    public func stringValue(useColors: Bool, header: Captions? = nil) -> String {
         var resultRows: [String] = []
         var cells = self.values
         
@@ -58,7 +65,7 @@ public class Table {
         if let columnsHeader = header?.columns, columnsHeader.count > 0 {
             var cellsWithColumnsHeader: [Cell] = []
             for cell in cells {
-                let shiftedCell = Cell(address: (x: cell.address.x, y: cell.address.y + 1), value: cell.value)
+                let shiftedCell = Cell(address: (x: cell.address.x, y: cell.address.y + 1), value: cell.value, color: cell.color)
                 cellsWithColumnsHeader.append(shiftedCell)
             }
             for (index, columnCaption) in columnsHeader.enumerated() {
@@ -71,7 +78,7 @@ public class Table {
         if let rowsHeader = header?.rows, rowsHeader.count > 0 {
             var cellWithRowsHeader: [Cell] = []
             for cell in cells {
-                let shiftedCell = Cell(address: (x: cell.address.x + 1, y: cell.address.y), value: cell.value)
+                let shiftedCell = Cell(address: (x: cell.address.x + 1, y: cell.address.y), value: cell.value, color: cell.color)
                 cellWithRowsHeader.append(shiftedCell)
             }
             for (index, rowHeader) in rowsHeader.enumerated() {
@@ -102,10 +109,12 @@ public class Table {
             for column in 0 ..< numberOfColumns {
                 let columnWidth = widths[column]
                 var value: String = ""
-                if let cellValue = cellsInRow.cell(at: (x: column, y: row))?.value {
+                let cell = cellsInRow.cell(at: (x: column, y: row))
+                if let cellValue = cell?.value {
                     value = cellValue.tableStringValue
                 }
-                resultRowColumns.append(value.center(in: columnWidth, padding: self.paddingString))
+                let color = useColors ? cell?.color : nil
+                resultRowColumns.append(value.center(in: columnWidth, padding: self.paddingString, color: color))
             }
             resultRows.append("|" + resultRowColumns.joined(separator: "|") + "|")
         }
@@ -167,12 +176,17 @@ extension String {
         return result
     }
     
-    public func center(in width: Int, padding: String) -> String {
+    public func center(in width: Int, padding: String, color: ASCIIColor? = nil) -> String {
         let spaceLeft = width - self.count
         let halfSpaceLeft: Float = Float(spaceLeft) / 2.0
         var layoutedValue: String = padding.repeat(Int(halfSpaceLeft.rounded(.down)))
-        layoutedValue += self
-        layoutedValue += padding.repeat(width - layoutedValue.count)
+        let valueLength = layoutedValue.count + self.count
+        if let color = color {
+            layoutedValue += "\(self, color: color)"
+        } else {
+            layoutedValue += self
+        }
+        layoutedValue += padding.repeat(width - valueLength)
         return layoutedValue
     }
 }
@@ -203,5 +217,23 @@ extension Sequence where Element == Table.Cell {
     var numberOfColumns: Int {
         guard let maxIndex = map({ $0.address.x }).max() else { return 0 }
         return maxIndex + 1
+    }
+}
+
+public enum ASCIIColor: String {
+    case black = "\u{001B}[0;30m"
+    case red = "\u{001B}[0;31m"
+    case green = "\u{001B}[0;32m"
+    case yellow = "\u{001B}[0;33m"
+    case blue = "\u{001B}[0;34m"
+    case magenta = "\u{001B}[0;35m"
+    case cyan = "\u{001B}[0;36m"
+    case white = "\u{001B}[0;37m"
+    case `default` = "\u{001B}[0;0m"
+}
+
+extension DefaultStringInterpolation {
+    mutating func appendInterpolation<T: CustomStringConvertible>(_ value: T, color: ASCIIColor) {
+            appendInterpolation("\(color.rawValue)\(value)\(ASCIIColor.default.rawValue)")        
     }
 }

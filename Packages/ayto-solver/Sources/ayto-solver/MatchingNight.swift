@@ -45,7 +45,7 @@ public struct MatchingNight {
             // all not impossible matches must be hits
             let newHitPairs = pairs.filter { !impossibleMatches.map({ $0.pair }) .contains($0) }
             for pair in newHitPairs {
-                logger?.info("Pair must be a hit to meet matching nights hits", metadata: ["person1": "\(pair.person1.name)", "person2": "\(pair.person2.name)"])
+                logger?.debug("Pair must be a hit to meet matching nights hits", metadata: ["person1": "\(pair.person1.name)", "person2": "\(pair.person2.name)"])
                 safeMatches.append(Match.match(pair.person1, pair.person2))
             }
         }
