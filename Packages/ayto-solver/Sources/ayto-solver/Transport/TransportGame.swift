@@ -56,7 +56,7 @@ public extension Transport {
                     return ayto_solver.Match.noMatch(person1, person2)
             }}
             
-            return ayto_solver.Game(title: self.title, persons:persons, knownMatches: matches, nights: matchingNights)
+            return try ayto_solver.Game(title: self.title, persons:persons, knownMatches: matches, nights: matchingNights)
         }
     }
     

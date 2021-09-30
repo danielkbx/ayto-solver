@@ -3,18 +3,15 @@ import XCTest
 
 final class GameTests: XCTestCase {
     
-    func test_nomination_leftOvers_throwsInBalanceError() throws {
+    func test_unbalancedGame_throwsInBalanceError() throws {
         let personA1 = Person(regularPerson: "A1", gender: .female)
         let personA2 = Person(regularPerson: "A2", gender: .female)
         let personA3 = Person(regularPerson: "A3", gender: .female)
         let personB1 = Person(regularPerson: "B1", gender: .male)
-        let sut = Game(title: "Test Game",
+        XCTAssertThrowsError(try Game(title: "Test Game",
                        persons: [personA1, personA2, personA3, personB1],
                        knownMatches: [Match.noMatch(personB1, personA1), Match.noMatch(personB1, personA2)],
-                       nights: [])
-        
-        
-        XCTAssertThrowsError(try sut.nominateSingleLeftOver())
+                       nights: []))
     }
         
     func test_nomination_leftOvers() throws {
@@ -24,7 +21,7 @@ final class GameTests: XCTestCase {
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
         let personB3 = Person(regularPerson: "B3", gender: .male)
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons: [personA1, personA2, personA3, personB1, personB2, personB3],
                        knownMatches: [Match.noMatch(personB1, personA1), Match.noMatch(personB1, personA2)],
                        nights: [])
@@ -48,7 +45,7 @@ final class GameTests: XCTestCase {
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
         let personB3 = Person(regularPerson: "B3", gender: .male)
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons:
                         [personA1, personA2, personA3, personA4, personB1, personB2, personB3],
                        knownMatches:
@@ -77,7 +74,7 @@ final class GameTests: XCTestCase {
         let personA3 = Person(regularPerson: "A3", gender: .female)
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons:
                         [personA1, personA2, personA3, personB1, personB2],
                        knownMatches:
@@ -102,7 +99,7 @@ final class GameTests: XCTestCase {
         let personA2 = Person(regularPerson: "A2", gender: .female)
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons: [personA1, personA2, personB1, personB2],
                        knownMatches: [Match.match(personA1, personB1)],
                        nights: [])
@@ -126,7 +123,7 @@ final class GameTests: XCTestCase {
         let personA3 = Person(extraPerson: "A3", gender: .female)
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons: [personA1, personA2, personA3, personB1, personB2],
                        knownMatches: [Match.match(personA1, personB1)],
                        nights: [])
@@ -150,7 +147,7 @@ final class GameTests: XCTestCase {
         let personA3 = Person(extraPerson: "A3", gender: .female)
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons: [personA1, personA2, personA3, personB1, personB2],
                        knownMatches: [Match.match(personA3, personB1)],
                        nights: [])
@@ -174,7 +171,7 @@ final class GameTests: XCTestCase {
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
         let personB3 = Person(regularPerson: "B3", gender: .male)
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons: [personA1, personA2, personA3, personB1, personB2, personB3],
                        knownMatches: [Match.match(personA1, personB1), Match.noMatch(personA2, personB3), Match.noMatch(personA3, personB2)],
                        nights: [])
@@ -195,12 +192,13 @@ final class GameTests: XCTestCase {
         let personB1 = Person(regularPerson: "B1", gender: .male)
         let personB2 = Person(regularPerson: "B2", gender: .male)
         
-        let sut = Game(title: "Test Game",
+        let sut = try Game(title: "Test Game",
                        persons: [personA1, personA2, personB1, personB2],
                        knownMatches: [Match.match(personA1, personB1)],
                        nights: [])
         
-        let safeMatches = try sut.matchLastPair().safeMatches()
+        try sut.matchLastPair()
+        let safeMatches = sut.knownMatches.safeMatches()
         
         XCTAssertEqual(safeMatches.count, 2)
         

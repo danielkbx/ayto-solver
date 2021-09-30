@@ -63,4 +63,8 @@ public extension Sequence where Element == Person {
         with(role: role).count
     }
     
+    func without(_ persons: [Person]) -> [Person] {
+        filter { !persons.contains($0) }
+    }
+    
 }

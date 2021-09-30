@@ -56,6 +56,13 @@ public class Table {
             values.append(Cell(address:address, value: newValue, color: color))
         }
     }
+    
+    public func set(color: ASCIIColor, at address: Address) {
+        guard let cell = values.cell(at: address) else { return }
+        
+        remove(cellAt: address)
+        set(value: cell.value, at: cell.address, color: color)
+    }
             
     public func stringValue(useColors: Bool, header: Captions? = nil) -> String {
         var resultRows: [String] = []
@@ -102,8 +109,11 @@ public class Table {
                 widths.append(0)
             }
         }
+        
+        var lineLength: Int = 0
                         
         for row in 0 ..< numberOfRows {
+            var rowLength: Int = 0
             var resultRowColumns: [String] = []
             let cellsInRow = cells.cells(inRow: row)
             for column in 0 ..< numberOfColumns {
@@ -115,12 +125,13 @@ public class Table {
                 }
                 let color = useColors ? cell?.color : nil
                 resultRowColumns.append(value.center(in: columnWidth, padding: self.paddingString, color: color))
+                rowLength += columnWidth + 1
             }
             resultRows.append("|" + resultRowColumns.joined(separator: "|") + "|")
+            lineLength = max(lineLength, rowLength + 1)
         }
         
         var result: String = ""
-        let lineLength: Int = resultRows.first?.count ?? 0
         
         if lineLength > 0 {
             result += "┌" + "─".repeat(lineLength - 2) + "┐\n"

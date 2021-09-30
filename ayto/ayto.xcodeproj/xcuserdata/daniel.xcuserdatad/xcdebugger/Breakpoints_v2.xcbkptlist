@@ -14,9 +14,9 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
-            landmarkName = "solve(logger:)"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "singleSolve(logger:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -30,8 +30,8 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
             landmarkName = "eliminatePersons(logger:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,42 +46,9 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "eliminatePersons(logger:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1DC62E15-C42C-46CF-8EC8-994E83F1F019"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../Packages/ayto-solver/Sources/ayto-solver/MatchingNight.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
-            landmarkName = "deducedMatches(by:logger:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D9FEE046-4623-4F24-9DC7-23E61CD46CA2"
-            shouldBeEnabled = "No"
-            condition = "pair.person1.name == &quot;Steffi&quot;"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../Packages/ayto-solver/Sources/ayto-solver/MatchingNight.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "deducedMatches(by:logger:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -115,22 +82,6 @@
             startingLineNumber = "50"
             endingLineNumber = "50"
             landmarkName = "isImpossible(by:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E2BE8E57-EC6D-46A8-99EE-0973DFCFEC20"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../Packages/ayto-solver/Sources/ayto-solver/MatchingNight.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
-            landmarkName = "deducedMatches(by:logger:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -176,8 +127,8 @@
             filePath = "../Packages/ayto-solver/Tests/ayto-solverTests/GameTests.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
             landmarkName = "test_nomination_leftOvers_withExtra()"
             landmarkType = "7">
          </BreakpointContent>
@@ -192,8 +143,8 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
             landmarkName = "nominateSingleLeftOver(logger:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -208,8 +159,8 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "nominateSingleLeftOver(logger:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -224,8 +175,8 @@
             filePath = "../Packages/ayto-solver/Tests/ayto-solverTests/GameTests.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
             landmarkName = "test_eliminatePersons_forExtra()"
             landmarkType = "7">
          </BreakpointContent>
@@ -256,8 +207,8 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
             landmarkName = "matchLastPair()"
             landmarkType = "7">
          </BreakpointContent>
@@ -288,8 +239,8 @@
             filePath = "ayto/Table.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "154"
-            endingLineNumber = "154"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
             landmarkName = "stringValue(useColors:header:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -304,8 +255,8 @@
             filePath = "ayto/Table.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
             landmarkName = "stringValue(useColors:header:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -320,8 +271,8 @@
             filePath = "ayto/Table.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "61"
-            endingLineNumber = "61"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
             landmarkName = "stringValue(useColors:header:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -336,8 +287,8 @@
             filePath = "ayto/Table.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "stringValue(useColors:header:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -352,9 +303,9 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "solve(logger:)"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "singleSolve(logger:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -368,9 +319,9 @@
             filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "solve(logger:)"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "singleSolve(logger:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -384,9 +335,105 @@
             filePath = "ayto/ayto.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
             landmarkName = "run()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "098F3907-9553-4CAF-80F3-863A9A4D8574"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Packages/ayto-solver/Tests/ayto-solverTests/MatchingNightsTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "test_samePerson_multipleTimes_throws()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "81402A55-73F9-49F1-A070-C83BCDECA4D8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Packages/ayto-solver/Sources/ayto-solver/MatchingNight.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "deducedMatches(by:logger:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "691E43D0-FCF4-4DBB-9C3B-A968697E03B2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "solve(logger:extendedCalculations:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "90B6AA95-D2D8-4182-8B21-D92AB2207AF3"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
+            landmarkName = "solve(logger:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C307FF2C-1000-47E9-84B9-4FA5713BCBDB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "solve(logger:extendedCalculations:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F3BB0F1B-3D1B-4527-826A-60420FE6EAAB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "solve(logger:extendedCalculations:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

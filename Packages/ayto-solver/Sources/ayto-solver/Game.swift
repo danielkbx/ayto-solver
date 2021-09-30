@@ -4,7 +4,15 @@ import Logging
 public class Game {
     
     public enum ConstrainsError: Error {
-        case personsGenderNotBalanced
+        case personsGenderNotBalanced(male: Int, female: Int)
+    }
+    
+    public enum SolveError: Error {
+        case conflictingMatches(pair: Pair)
+        case contradictoryMatches(matches: [Match])
+        case matchingNightNotUnique(night: MatchingNight, person: Person)
+        case matchingNightExceedsHits(night: MatchingNight)
+        case matchingNightExceedsNoHits(night: MatchingNight)
     }
     
     public let title: String
@@ -13,14 +21,60 @@ public class Game {
     private(set) public var knownMatches: [Match]
     public let matchingNights: [MatchingNight]
     
-    public init(title: String, persons: [Person], knownMatches: [Match], nights: [MatchingNight]) {
+    public init(title: String, persons: [Person], knownMatches: [Match], nights: [MatchingNight]) throws {
         self.title = title
         self.persons = persons
         self.knownMatches = knownMatches
         self.matchingNights = nights
+        
+        let femalePersons = self.persons.with(gender: .female).with(role: .regular)
+        let malePersons = self.persons.with(gender: .male).with(role: .regular)
+        
+        guard femalePersons.count == malePersons.count else {
+            throw Game.ConstrainsError.personsGenderNotBalanced(male: malePersons.count, female: femalePersons.count)
+        }
     }
     
-    public func solve(logger: Logger? = nil) throws -> Solution {
+    public var personsWithMatch: [Person] { knownMatches.safeMatches().persons() }
+    public var personsWithoutMatch: [Person] { persons.without(personsWithMatch) }
+    
+    public func solve(logger: Logger? = nil, extendedCalculations: Bool = true) throws -> Solution {
+        let solution = try singleSolve(logger: logger)
+        
+        let expectedNumberOfMatches = max(persons.with(gender: .female).count, persons.with(gender: .male).count)
+        if solution.matches.count >= expectedNumberOfMatches {
+            return solution
+        }
+
+        let personsWithoutMatch = personsWithoutMatch
+        if personsWithoutMatch.count == 1 {
+            let person = personsWithoutMatch.first!
+            if person.role == .extra {
+                // only the exta person is left
+                let solutionCandidates: [SolutionCandidate] = try self.persons.with(gender: person.gender.other).compactMap {
+                    if self.knownMatches.matches(with: person, and: $0).count > 0 { return nil }
+                    return try SolutionCandidate(game: self, assumedPairs: [Pair($0, person)])
+                }
+
+                let solutions: [Solution] = solutionCandidates.compactMap { $0.solve(logger: logger) }
+                if solutions.count == 1 {
+                    return solution
+                } else if solutions.count > 1 {
+                    let matches = solutions.reduce([]) { result, solution in result + solution.allMatches }.filter { !($0.contains(person) && $0.isMatch) }
+                    if let combinedMatches = try? matches.unique(),
+                       let finalGame = try? Game(title: self.title, persons: self.persons, knownMatches: combinedMatches, nights: self.matchingNights),
+                       let finalSolution = try? finalGame.singleSolve(logger: logger)
+                    {
+                        return finalSolution
+                    }
+                }
+            }
+        }
+        
+        return solution
+    }
+    
+    fileprivate func singleSolve(logger: Logger? = nil) throws -> Solution {
         
         var loops = 0
         var didDeduceSomething: Bool = false
@@ -28,30 +82,56 @@ public class Game {
             didDeduceSomething = false
             loops += 1
             
-            let eliminatedMatches = try eliminatePersons(logger: logger)
-            if eliminatedMatches.count > 0 {
-                didDeduceSomething = true
-            }
-            
-            let nominatedMatches = try nominateSingleLeftOver(logger: logger)
-            if nominatedMatches.count > 0 {
-                didDeduceSomething = true
-            }
-            
-            for night in self.matchingNights.sorted(by: { $0.hits < $1.hits }) {
-                let deducedMatches = try night.deducedMatches(by: self.knownMatches, logger: logger)
-                if deducedMatches.count > knownMatches.count {
-                    self.knownMatches = try deducedMatches.unique()
+            do {
+                let eliminatedMatches = try eliminatePersons(logger: logger)
+                if eliminatedMatches.count > 0 {
                     didDeduceSomething = true
+                }
+                
+                
+                let nominatedMatches = try nominateSingleLeftOver(logger: logger)
+                if nominatedMatches.count > 0 {
+                    didDeduceSomething = true
+                }
+                
+                for night in self.matchingNights.sorted(by: { $0.hits < $1.hits }) {
+                    do {
+                        let deducedMatches = try night.deducedMatches(by: self.knownMatches, logger: logger)
+                        if deducedMatches.count > knownMatches.count {
+                            self.knownMatches = try deducedMatches.unique()
+                            didDeduceSomething = true
+                        }
+                    } catch {
+                        if let error = error as? MatchingNight.DeduceError {
+                            switch error {
+                            case .matchesExceedHits: throw SolveError.matchingNightExceedsHits(night: night)
+                            case .noMatchesExceedNoHits: throw SolveError.matchingNightExceedsNoHits(night: night)
+                            case .personInMultipePairs(let person): throw SolveError.matchingNightNotUnique(night: night, person: person)
+                            }
+                        } else {
+                            throw error
+                        }
+                    }
+                }
+                
+                if try self.matchLastPair().count > 0 {
+                    didDeduceSomething = true
+                }
+                
+            } catch {
+                if let error = error as? Match.UniqueError {
+                    switch error {
+                    case .conflictingResult(let pair): throw SolveError.conflictingMatches(pair: pair)
+                    case .contradictory(let matches): throw SolveError.contradictoryMatches(matches: matches)
+                    }
+                } else {
+                    throw error
                 }
             }
             
-            if try self.matchLastPair().count > 0 {
-                didDeduceSomething = true
-            }
-                                                
+            
         } while didDeduceSomething && loops <= 100
-                        
+        
         return Game.Solution(allMatches: knownMatches, calculationLoops: loops)
     }
     
@@ -82,10 +162,6 @@ public class Game {
     
     @discardableResult
     internal func nominateSingleLeftOver(logger: Logger? = nil) throws -> [Match] {
-        guard self.persons.with(gender: .male).with(role: .regular).count == self.persons.with(gender: .female).with(role: .regular).count else {
-            throw Game.ConstrainsError.personsGenderNotBalanced
-        }
-        
         var nominatedLeftOverMatches: [Match] = []
         var matches = knownMatches
         
@@ -118,7 +194,7 @@ public class Game {
                 nominatedLeftOverMatches.append(newMatch)
             }                        
         }
-              
+        
         self.knownMatches = try matches.unique()
         return nominatedLeftOverMatches
     }
@@ -130,10 +206,6 @@ public class Game {
         
         var femalePersons = self.persons.with(gender: .female).with(role: .regular)
         var malePersons = self.persons.with(gender: .male).with(role: .regular)
-        
-        guard femalePersons.count == malePersons.count else {
-            throw Game.ConstrainsError.personsGenderNotBalanced
-        }
         
         for safeMatch in matches.safeMatches() {
             let femalePerson = safeMatch.pair.person(with: .female)
@@ -161,4 +233,28 @@ public extension Game {
         public let calculationLoops: Int
     }
     
+}
+
+private class SolutionCandidate {
+    let game: Game
+    let assumedPairs: [Pair]
+    
+    private(set) var solution: Game.Solution?
+    
+    init(game: Game, assumedPairs: [Pair]) throws {
+        var knownMatches = game.knownMatches
+        for pair in assumedPairs {
+            knownMatches.append(Match.match(pair.person1, pair.person2))
+        }
+        self.game = try Game(title: game.title, persons: game.persons, knownMatches: knownMatches, nights: game.matchingNights)
+        self.assumedPairs = assumedPairs
+    }
+    
+    func solve(logger: Logger?) -> Game.Solution? {
+        if let solution = try? self.game.singleSolve(logger: logger) {
+            self.solution = solution
+        }
+        
+        return self.solution
+    }
 }
