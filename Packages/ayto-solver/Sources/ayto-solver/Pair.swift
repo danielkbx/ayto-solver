@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Pair: Equatable, Hashable {
+public struct Pair: Equatable, Hashable {        
     public enum ContainmentError: Error {
         case doesNotContain(person: Person)
     }
@@ -36,7 +36,7 @@ public struct Pair: Equatable, Hashable {
             return false
         }
         
-        if match.isMatch {
+        if match.isMatch {            
             return match.pair.contains(person1) && !match.pair.contains(person2)
                 || match.pair.contains(person2) && !match.pair.contains(person1)
         } else {

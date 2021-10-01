@@ -31,6 +31,7 @@
 		658F0F0226F0A05B0067B9AA /* ayto */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ayto; sourceTree = BUILT_PRODUCTS_DIR; };
 		658F0F0526F0A05B0067B9AA /* ayto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ayto.swift; sourceTree = "<group>"; };
 		658F0F0C26F0A08D0067B9AA /* ayto-solver */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ayto-solver"; path = "../Packages/ayto-solver"; sourceTree = "<group>"; };
+		65CA379F2707165300FA927C /* reality-stars-season1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reality-stars-season1.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				658F0F0526F0A05B0067B9AA /* ayto.swift */,
+				65CA379F2707165300FA927C /* reality-stars-season1.json */,
 				653F0CB026FCCDFC0086B30E /* season2.json */,
 				653F0CB1270242430086B30E /* Table.swift */,
 			);

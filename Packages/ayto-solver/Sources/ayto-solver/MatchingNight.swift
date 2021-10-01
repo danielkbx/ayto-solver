@@ -1,7 +1,12 @@
 import Foundation
 import Logging
+import Algorithms
 
-public struct MatchingNight {
+public struct MatchingNight: CustomDebugStringConvertible {
+    
+    public var debugDescription: String {
+        (["\(self.title), \(self.hits) hits"] + pairs.map({"\($0.person1.name) + \($0.person2.name)"})).joined(separator: ", ")
+    }
     
     enum DeduceError: Error {
         case matchesExceedHits
@@ -21,7 +26,7 @@ public struct MatchingNight {
     
     public var persons: [Person] {
         pairs.reduce([]) { result, pair in result + [pair.person1, pair.person2] }
-    }
+    }        
             
     internal func deducedMatches(by knownMatches: [Match], logger: Logger? = nil) throws -> [Match] {
         logger?.debug("Deducing from matching night", metadata: ["hits": "\(self.hits)", "matches": "\(knownMatches.count)"])
@@ -53,6 +58,7 @@ public struct MatchingNight {
                     impossibleMatches.append(Match.noMatch(pair.person1, pair.person2))
                 }
             }
+            impossibleMatches = try impossibleMatches.unique()
         } else if safeMatches.count < hits, impossibleMatches.count + hits == pairs.count {
             // all not impossible matches must be hits
             let newHitPairs = pairs.filter { !impossibleMatches.map({ $0.pair }) .contains($0) }
@@ -61,16 +67,16 @@ public struct MatchingNight {
                 safeMatches.append(Match.match(pair.person1, pair.person2))
             }
         }
-        
-        
+                        
         let allMatches = try (knownMatches + impossibleMatches + safeMatches).unique()
         
         // check if there are more nomatches than allowed
         let noMatches = relevantMatches(of: allMatches).filter { !$0.isMatch }
-        if hits + noMatches.count > pairs.count {
+        let noMatchesWithoutExtraPersons = noMatches.filter({ $0.pair.person1.role != .extra && $0.pair.person2.role != .extra })
+        if hits + noMatchesWithoutExtraPersons.count > pairs.count {
             throw DeduceError.noMatchesExceedNoHits
         }
-        
+                        
         return allMatches
     }
     

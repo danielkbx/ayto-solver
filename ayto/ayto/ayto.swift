@@ -6,7 +6,7 @@ import Darwin
 
 @main
 struct ayto: ParsableCommand {
-    
+        
     enum InputError: Error {
         case jsonFilePathInvalid
     }
@@ -17,19 +17,22 @@ struct ayto: ParsableCommand {
     @Flag(help: "Prints all matching nights including the final matches.")
     var printNights = false
     
-    @Flag(help: "Prints the final matrix")
+    @Flag(help: "Prints the final matrix.")
     var printMatrix = false
     
-    @Flag(inversion: FlagInversion.prefixedNo, help: "Prints the final solution.")
+    @Flag(inversion: .prefixedNo, help: "Prints the final solution.")
     var printSolution = true
     
     @Flag(help: "Prints verbose output about deduces matches.") 
     var verbose = false
     
-    @Flag(inversion: FlagInversion.prefixedNo, help: "Use colors to make the output easier to read")
+    @Flag(inversion: .prefixedNo, help: "Use colors to make the output easier to read.")
     var colors = true
     
-    mutating func run() throws {
+    @Flag(inversion: .prefixedNo, help: "Enables extended calculation so that more pairs can be excluded. Might take a couple of seconds.")
+    var extendedCalculations = true
+    
+    func run() throws {
         var logger = Logger(label: "com.danielkbx.ayto")
         
         if verbose {
@@ -49,44 +52,41 @@ struct ayto: ParsableCommand {
         let game = try Transport.Game.game(fromData: data)
         
         do {
-            let solution = try game.solve(logger: logger)
+            let solution = try game.solve(logger: logger, extendedCalculations: self.extendedCalculations) { loop, game, nights in
+                guard self.verbose else { return true }
+                
+                for night in nights.sorted(by: { $0.title < $1.title }) {
+                    self.printNight(night, game: game)
+                }
+                print("\nMatrix after loop \(loop):")
+                self.printMatrix(game)
+                print("= End Loop \(loop) ====================================================\n")
+                return true
+            }
             
             if printNights {
+                print("\nFinal Matching Nights:")
                 for night in game.matchingNights {
                     self.printNight(night, game: game)
                 }
             }
             
             if printMatrix {
-                var columns = game.persons.with(gender: .male).sorted(by: { $0.name < $1.name })
-                columns += game.persons.with(gender: .male).with(role: .extra).sorted(by: { $0.name < $1.name })
-                var rows = game.persons.with(gender: .female).with(role: .regular).sorted(by: { $0.name < $1.name })
-                rows += game.persons.with(gender: .female).with(role: .extra).sorted(by: { $0.name < $1.name })
-                
-                let table = Table()
-                
-                for (indexM, columnPerson) in columns.enumerated() {
-                    for (indexF, rowPerson) in rows.enumerated() {
-                        if let match = game.knownMatches.matches(with: columnPerson, and: rowPerson).first {
-                            table.set(value: match.isMatch ? "✓" : "-", at: (x: indexM, y: indexF), color: match.isMatch ? .green : .red)
-                        }
-                    }
-                }
-                
-                let columnCaptions = columns.map { $0.role == .extra ? "\($0.name) (E)" : $0.name }
-                let rowCaptions = rows.map { $0.role == .extra ? "\($0.name) (E)" : $0.name }
                 print("\nFinal Matrix:")
-                print(table.stringValue(useColors: self.colors, header: Table.Captions(columns: columnCaptions, rows: rowCaptions)))
+                printMatrix(game)
             }
             
             if printSolution {
-                print("\nSolution (\(solution.matches.count) matches), took \(solution.calculationLoops) loops:")
+                print("\nSolution (\(solution.matches.count) matches), took \(solution.calculationLoops) loops and \(solution.exclusionTries) extended tries:")
                 let matchesTable = Table()
                 for (index, match) in solution.matches.enumerated() {
                     let person1 = match.pair.person(with: .female)
                     let person2 = try match.pair.not(person: person1)
                     matchesTable.set(value: person1.name, at: (x:0, y: index))
                     matchesTable.set(value: person2.name, at: (x:1, y: index))
+                    let color: ASCIIColor = person1.role == .extra || person2.role == .extra ? .yellow : .green
+                    matchesTable.set(color: color, at: (x:0, y: index))
+                    matchesTable.set(color: color, at: (x:1, y: index))
                 }
                 print(matchesTable.stringValue(useColors: self.colors))
             }
@@ -120,8 +120,29 @@ struct ayto: ParsableCommand {
         guard let match = match else { return "" }
         switch match.isMatch {
         case true: return "✓"
-        case false: return "-"
+        case false: return "x"
         }
+    }
+    
+    func printMatrix(_ game: Game) {
+        var columns = game.persons.with(gender: .male).sorted(by: { $0.name < $1.name })
+        columns += game.persons.with(gender: .male).with(role: .extra).sorted(by: { $0.name < $1.name })
+        var rows = game.persons.with(gender: .female).with(role: .regular).sorted(by: { $0.name < $1.name })
+        rows += game.persons.with(gender: .female).with(role: .extra).sorted(by: { $0.name < $1.name })
+        
+        let table = Table()
+        
+        for (indexM, columnPerson) in columns.enumerated() {
+            for (indexF, rowPerson) in rows.enumerated() {
+                if let match = game.knownMatches.matches(with: columnPerson, and: rowPerson).first {
+                    table.set(value: match.isMatch ? "✓" : "x", at: (x: indexM, y: indexF), color: match.isMatch ? .green : .red)
+                }
+            }
+        }
+        
+        let columnCaptions = columns.map { $0.role == .extra ? "\($0.name) (E)" : $0.name }
+        let rowCaptions = rows.map { $0.role == .extra ? "\($0.name) (E)" : $0.name }
+        print(table.stringValue(useColors: self.colors, header: Table.Captions(columns: columnCaptions, rows: rowCaptions)))
     }
     
     func printNight(_ night: MatchingNight, game: Game) {

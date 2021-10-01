@@ -75,6 +75,16 @@ public extension Sequence where Element == Match {
         return persons.unique()
     }
     
+    func pairs() -> [Pair] {
+        var pairs: [Pair] = []
+        for match in self {
+            if !pairs.contains(match.pair) {
+                pairs.append(match.pair)
+            }
+        }
+        return pairs
+    }
+    
     func unique() throws -> [Match] {
         var matches: [Match] = []
         
@@ -93,7 +103,9 @@ public extension Sequence where Element == Match {
         for candidate in matches {
             let contradictoryMatches = matches.matches(with: candidate.pair.person1, and: candidate.pair.person2)
             if contradictoryMatches.count == 2 {
-                throw Match.UniqueError.conflictingResult(pair: candidate.pair)
+                if contradictoryMatches.persons().with(role: .extra).count == 0 {
+                    throw Match.UniqueError.conflictingResult(pair: candidate.pair)
+                }
             }
         }
         

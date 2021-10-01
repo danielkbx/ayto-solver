@@ -1,5 +1,6 @@
 import Foundation
 import Logging
+import Algorithms
 
 public class Game {
     
@@ -38,101 +39,180 @@ public class Game {
     public var personsWithMatch: [Person] { knownMatches.safeMatches().persons() }
     public var personsWithoutMatch: [Person] { persons.without(personsWithMatch) }
     
-    public func solve(logger: Logger? = nil, extendedCalculations: Bool = true) throws -> Solution {
-        let solution = try singleSolve(logger: logger)
-        
-        let expectedNumberOfMatches = max(persons.with(gender: .female).count, persons.with(gender: .male).count)
-        if solution.matches.count >= expectedNumberOfMatches {
-            return solution
-        }
-
-        let personsWithoutMatch = personsWithoutMatch
-        if personsWithoutMatch.count == 1 {
-            let person = personsWithoutMatch.first!
-            if person.role == .extra {
-                // only the exta person is left
-                let solutionCandidates: [SolutionCandidate] = try self.persons.with(gender: person.gender.other).compactMap {
-                    if self.knownMatches.matches(with: person, and: $0).count > 0 { return nil }
-                    return try SolutionCandidate(game: self, assumedPairs: [Pair($0, person)])
-                }
-
-                let solutions: [Solution] = solutionCandidates.compactMap { $0.solve(logger: logger) }
-                if solutions.count == 1 {
-                    return solution
-                } else if solutions.count > 1 {
-                    let matches = solutions.reduce([]) { result, solution in result + solution.allMatches }.filter { !($0.contains(person) && $0.isMatch) }
-                    if let combinedMatches = try? matches.unique(),
-                       let finalGame = try? Game(title: self.title, persons: self.persons, knownMatches: combinedMatches, nights: self.matchingNights),
-                       let finalSolution = try? finalGame.singleSolve(logger: logger)
-                    {
-                        return finalSolution
-                    }
-                }
-            }
-        }
-        
-        return solution
+    private func unknownPairs(of night: MatchingNight) -> [Pair] {
+        night.pairs.compactMap { self.knownMatches.matches(with: $0).first == nil ? $0 : nil }
     }
     
-    fileprivate func singleSolve(logger: Logger? = nil) throws -> Solution {
+    private func matches(of night: MatchingNight) -> [Match] {
+        var result: [Match] = []
+        for pair in night.pairs {
+            if let match = self.knownMatches.matches(with: pair.person1, and: pair.person2).first {
+                result.append(match)
+            }
+        }
+        return result
+    }
+           
+    public func solve(logger: Logger? = nil, extendedCalculations: Bool = true, afterEachLoop: ((_ loop: Int, _ game: Game, _ nights: [MatchingNight]) -> Bool)? = nil) throws -> Solution {
         
         var loops = 0
-        var didDeduceSomething: Bool = false
+        var extendedTries = 0
+        
+        var didExcludeSomething: Bool = false
+        var nightsWithDeducedInfo: [MatchingNight] = []
         repeat {
-            didDeduceSomething = false
-            loops += 1
+            didExcludeSomething = false
             
-            do {
-                let eliminatedMatches = try eliminatePersons(logger: logger)
-                if eliminatedMatches.count > 0 {
-                    didDeduceSomething = true
-                }
+            
+            var didDeduceSomething: Bool = false
+            repeat {
+                didDeduceSomething = false
+                loops += 1
                 
-                
-                let nominatedMatches = try nominateSingleLeftOver(logger: logger)
-                if nominatedMatches.count > 0 {
-                    didDeduceSomething = true
-                }
-                
-                for night in self.matchingNights.sorted(by: { $0.hits < $1.hits }) {
-                    do {
-                        let deducedMatches = try night.deducedMatches(by: self.knownMatches, logger: logger)
-                        if deducedMatches.count > knownMatches.count {
-                            self.knownMatches = try deducedMatches.unique()
-                            didDeduceSomething = true
-                        }
-                    } catch {
-                        if let error = error as? MatchingNight.DeduceError {
-                            switch error {
-                            case .matchesExceedHits: throw SolveError.matchingNightExceedsHits(night: night)
-                            case .noMatchesExceedNoHits: throw SolveError.matchingNightExceedsNoHits(night: night)
-                            case .personInMultipePairs(let person): throw SolveError.matchingNightNotUnique(night: night, person: person)
+                do {
+                    let eliminatedMatches = try eliminatePersons(logger: logger)
+                    if eliminatedMatches.count > 0 {
+                        didDeduceSomething = true
+                    }
+                    
+                    
+                    let nominatedMatches = try nominateSingleLeftOver(logger: logger)
+                    if nominatedMatches.count > 0 {
+                        didDeduceSomething = true
+                    }
+                    
+                    nightsWithDeducedInfo = []
+                    for night in self.matchingNights.sorted(by: { $0.hits < $1.hits }) {
+                        
+                        let _ = afterEachLoop?(loops, self, [])
+                        
+                        do {
+                            let deducedMatches = try night.deducedMatches(by: self.knownMatches, logger: logger)
+                            let difference = deducedMatches.difference(from: self.knownMatches)
+                            var newMatches: [Match] = []
+                            for change in difference {
+                                switch change {
+                                case .insert(_, let element, _):
+                                    newMatches.append(element)
+                                default:
+                                    break
+                                }
                             }
-                        } else {
-                            throw error
+                                                                                    
+                            if newMatches.count > 0 {
+                                self.knownMatches = try deducedMatches.unique()
+                                nightsWithDeducedInfo.append(night)
+                                didDeduceSomething = true
+                            }
+                        } catch {
+                            if let error = error as? MatchingNight.DeduceError {
+                                switch error {
+                                case .matchesExceedHits: throw SolveError.matchingNightExceedsHits(night: night)
+                                case .noMatchesExceedNoHits: throw SolveError.matchingNightExceedsNoHits(night: night)
+                                case .personInMultipePairs(let person): throw SolveError.matchingNightNotUnique(night: night, person: person)
+                                }
+                            } else {
+                                throw error
+                            }
                         }
                     }
-                }
-                
-                if try self.matchLastPair().count > 0 {
-                    didDeduceSomething = true
-                }
-                
-            } catch {
-                if let error = error as? Match.UniqueError {
-                    switch error {
-                    case .conflictingResult(let pair): throw SolveError.conflictingMatches(pair: pair)
-                    case .contradictory(let matches): throw SolveError.contradictoryMatches(matches: matches)
+                    
+                    if try self.matchLastPair().count > 0 {
+                        didDeduceSomething = true
                     }
-                } else {
-                    throw error
+                    
+                } catch {
+                    if let error = error as? Match.UniqueError {
+                        switch error {
+                        case .conflictingResult(let pair): throw SolveError.conflictingMatches(pair: pair)
+                        case .contradictory(let matches): throw SolveError.contradictoryMatches(matches: matches)
+                        }
+                    } else {
+                        throw error
+                    }
+                }
+                
+                if (didDeduceSomething || didExcludeSomething), let continueBlock = afterEachLoop {
+                    didDeduceSomething = continueBlock(loops, self, nightsWithDeducedInfo)
+                }
+                
+            } while didDeduceSomething && loops <= 100
+            
+            if extendedCalculations {
+                let personsWithoutMatch = self.personsWithoutMatch
+                if personsWithoutMatch.count > 0 {
+                    
+                    if personsWithoutMatch.count == 1, let extraPerson = personsWithoutMatch.first, extraPerson.role == .extra {
+                        let solutionCandidates: [SolutionCandidate] = self.persons.with(gender: extraPerson.gender.other).compactMap({ otherPerson in
+                            let pair = Pair(extraPerson, otherPerson)
+                            guard self.knownMatches.matches(with: pair).count == 0 else { return nil }
+                            
+                            return SolutionCandidate(game: self, assumedPairs: [pair])
+                        })
+                        for solutionCandidate in solutionCandidates {
+                            extendedTries += 1
+                            if solutionCandidate.solve(logger: logger) == nil {
+                                didExcludeSomething = true
+                                do {
+                                    self.knownMatches = try self.knownMatches + solutionCandidate.assumedPairs.map({ Match.noMatch($0.person1, $0.person2) }).unique()
+                                } catch {
+                                    if let error = error as? Match.UniqueError {
+                                        switch error {
+                                        case .conflictingResult(let pair): throw SolveError.conflictingMatches(pair: pair)
+                                        case .contradictory(let matches): throw SolveError.contradictoryMatches(matches: matches)
+                                        }
+                                    } else {
+                                        throw error
+                                    }
+                                }
+                            }
+                        }
+                    } else if personsWithoutMatch.count > 1 {
+                        for night in matchingNights {
+                            var solutionCandidates: [SolutionCandidate] = []
+                            let unknownPairs = self.unknownPairs(of: night)
+                            if unknownPairs.count > 0 {
+                                let matchesOfNight = self.matches(of: night)
+                                let safeMatchesOfNight = matchesOfNight.safeMatches()
+                                let noMatchesOfNight = matchesOfNight.filter { !$0.isMatch }
+                                let pairsToResolve = night.hits - safeMatchesOfNight.count
+                                if pairsToResolve  == 1 {
+                                    let pairCandidates = unknownPairs.uniquePermutations(ofCount: pairsToResolve)
+                                    
+                                    for combination in pairCandidates {
+                                        if let solutionCandidate = SolutionCandidate(game: self, assumedPairs: Array(combination)) {
+                                            solutionCandidates.append(solutionCandidate)
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            for solutionCandidate in solutionCandidates {
+                                let solution = solutionCandidate.solve(logger: logger, afterEachLoop: afterEachLoop)
+                                if solution == nil {
+                                    do {
+                                        self.knownMatches = try (self.knownMatches + solutionCandidate.assumedPairs.map({ Match.noMatch($0.person1, $0.person2) })).unique()
+                                        didExcludeSomething = true
+                                    } catch {
+                                        if let error = error as? Match.UniqueError {
+                                            switch error {
+                                            case .conflictingResult(let pair): throw SolveError.conflictingMatches(pair: pair)
+                                            case .contradictory(let matches): throw SolveError.contradictoryMatches(matches: matches)
+                                            }
+                                        } else {
+                                            throw error
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             
-            
-        } while didDeduceSomething && loops <= 100
+        } while didExcludeSomething
         
-        return Game.Solution(allMatches: knownMatches, calculationLoops: loops)
+        return Game.Solution(allMatches: knownMatches, calculationLoops: loops, exclusionTries: extendedTries)
     }
     
     @discardableResult
@@ -140,7 +220,7 @@ public class Game {
         let matches = knownMatches.filter { $0.isMatch }
         
         var eliminatedMatches: [Match] = []
-        for match in matches {
+        for match in matches.safeMatches() {
             logger?.debug("Deducing no matches from match", metadata: ["person1": "\(match.pair.person1.name)", "persons2": "\(match.pair.person2.name)"])
             
             for person in match.pair.persons {
@@ -231,6 +311,7 @@ public extension Game {
         public let allMatches: [Match]
         public var matches: [Match] { allMatches.filter { $0.isMatch } }
         public let calculationLoops: Int
+        public var exclusionTries: Int
     }
     
 }
@@ -241,18 +322,27 @@ private class SolutionCandidate {
     
     private(set) var solution: Game.Solution?
     
-    init(game: Game, assumedPairs: [Pair]) throws {
+    init?(game: Game, assumedPairs: [Pair]) {
         var knownMatches = game.knownMatches
         for pair in assumedPairs {
             knownMatches.append(Match.match(pair.person1, pair.person2))
         }
-        self.game = try Game(title: game.title, persons: game.persons, knownMatches: knownMatches, nights: game.matchingNights)
+        guard let newGame = try? Game(title: game.title, persons: game.persons, knownMatches: knownMatches, nights: game.matchingNights) else { return nil }
+        self.game = newGame
         self.assumedPairs = assumedPairs
     }
     
-    func solve(logger: Logger?) -> Game.Solution? {
-        if let solution = try? self.game.singleSolve(logger: logger) {
+    func solve(logger: Logger?, afterEachLoop: ((_ loop: Int, _ game: Game, _ nights: [MatchingNight]) -> Bool)? = nil) -> Game.Solution? {
+        do {
+            let solution = try self.game.solve(logger: logger, extendedCalculations: false, afterEachLoop: afterEachLoop)
             self.solution = solution
+        } catch {
+//            var meta: Logger.Metadata = [:]
+//            for (index, pair) in assumedPairs.enumerated() {
+//                meta["pair\(index)"] = "\(pair.person1.name)+\(pair.person2.name)"
+//            }
+//            logger?.info("solution candidate did produce conflict", metadata: meta)
+//            print(error)
         }
         
         return self.solution

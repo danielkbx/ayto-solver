@@ -1,0 +1,176 @@
+{
+    "title": "Season 2",
+    "persons": [
+        {"name": "Aurelia", "gender": "female"},
+        {"name": "Finnja", "gender": "female"},
+        {"name": "Jacky", "gender": "female"},
+        {"name": "Jill", "gender": "female"},
+        {"name": "Jules", "gender": "female"},
+        {"name": "Kathleen", "gender": "female"},
+        {"name": "Melina", "gender": "female"},
+        {"name": "Sarah", "gender": "female"},
+        {"name": "Steffi", "gender": "female"},
+        {"name": "Walentina", "gender": "female"},
+        {"name": "Vanessa", "gender": "female", "role": "extra"},
+        
+        {"name": "Alex", "gender": "male"},
+        {"name": "Danilo", "gender": "male"},
+        {"name": "Diogo", "gender": "male"},
+        {"name": "Eugen", "gender": "male"},
+        {"name": "Francesco", "gender": "male"},
+        {"name": "Jamy", "gender": "male"},
+        {"name": "Josua", "gender": "male"},
+        {"name": "Manuel", "gender": "male"},
+        {"name": "Salvatore", "gender": "male"},
+        {"name": "Tommy", "gender": "male"}
+    ],
+    "matches": [
+        {"person1": "Jules", "person2": "Francesco", "match": true},
+        
+        {"person1": "Finnja", "person2": "Danilo", "match": false},
+        {"person1": "Walentina", "person2": "Tommy", "match": false},
+        {"person1": "Finnja", "person2": "Salvatore", "match": false},
+        {"person1": "Finnja", "person2": "Eugen", "match": false},
+        {"person1": "Steffi", "person2": "Eugen", "match": false},
+        {"person1": "Sarah", "person2": "Josua", "match": false},
+        {"person1": "Melina", "person2": "Tommy", "match": false},
+        {"person1": "Aurelia", "person2": "Josua", "match": true}        
+    ],
+    "nights": [
+        {
+            "title": "Matching Night 1",
+            "pairs": [
+                {"person1": "Steffi", "person2": "Danilo"},
+                {"person1": "Jill", "person2": "Jamy"},
+                {"person1": "Walentina", "person2": "Eugen"},
+                {"person1": "Kathleen", "person2": "Manuel"},
+                {"person1": "Finnja", "person2": "Francesco"},
+                {"person1": "Aurelia", "person2": "Diogo"},
+                {"person1": "Jacky", "person2": "Salvatore"},
+                {"person1": "Jules", "person2": "Alex"},
+                {"person1": "Melina", "person2": "Tommy"},
+                {"person1": "Sarah", "person2": "Josua"}
+            ],
+            "hits": 3
+        },
+        {
+            "title": "Matching Night 3",
+            "pairs": [
+                {"person1": "Jules", "person2": "Francesco"},
+                
+                {"person1": "Steffi", "person2": "Eugen"},
+                {"person1": "Jill", "person2": "Jamy"},
+                {"person1": "Walentina", "person2": "Josua"},
+                {"person1": "Kathleen", "person2": "Manuel"},
+                {"person1": "Finnja", "person2": "Alex"},
+                {"person1": "Aurelia", "person2": "Diogo"},
+                {"person1": "Jacky", "person2": "Salvatore"},
+                {"person1": "Sarah", "person2": "Danilo"},
+                {"person1": "Melina", "person2": "Tommy"}
+            ],
+            "hits": 3
+        },
+        {
+            "title": "Matching Night 4",
+            "pairs": [
+                {"person1": "Jules", "person2": "Francesco"},
+                
+                {"person1": "Aurelia", "person2": "Diogo"},
+                {"person1": "Finnja", "person2": "Eugen"},
+                {"person1": "Jill", "person2": "Tommy"},
+                {"person1": "Kathleen", "person2": "Manuel"},
+                {"person1": "Melina", "person2": "Danilo"},
+                {"person1": "Sarah", "person2": "Josua"},
+                {"person1": "Steffi", "person2": "Alex"},
+                {"person1": "Walentina", "person2": "Salvatore"},
+                {"person1": "Vanessa", "person2": "Jamy"}
+            ],
+            "hits": 4
+        },
+        {
+            "title": "Matching Night 5",
+            "pairs": [
+                {"person1": "Jules", "person2": "Francesco"},
+
+                {"person1": "Aurelia", "person2": "Danilo"},
+                {"person1": "Finnja", "person2": "Eugen"},
+                {"person1": "Jill", "person2": "Manuel"},
+                {"person1": "Kathleen", "person2": "Salvatore"},
+                {"person1": "Melina", "person2": "Tommy"},
+                {"person1": "Sarah", "person2": "Alex"},
+                {"person1": "Steffi", "person2": "Jamy"},
+                {"person1": "Walentina", "person2": "Josua"},
+                {"person1": "Vanessa", "person2": "Diogo"}
+            ],
+            "hits": 3
+        },
+        {
+            "title": "Matching Night 6",
+            "pairs": [
+                {"person1": "Jules", "person2": "Francesco"},
+                
+                {"person1": "Finnja", "person2": "Eugen"},
+                {"person1": "Jacky", "person2": "Salvatore"},
+                {"person1": "Kathleen", "person2": "Manuel"},
+                {"person1": "Steffi", "person2": "Alex"},
+                {"person1": "Jill", "person2": "Danilo"},
+                {"person1": "Sarah", "person2": "Jamy"},
+                {"person1": "Walentina", "person2": "Josua"},
+                {"person1": "Melina", "person2": "Tommy"},
+                {"person1": "Aurelia", "person2": "Diogo"}
+            ],
+            "hits": 3
+        },
+        {
+            "title": "Matching Night 7",
+            "pairs": [
+                {"person1": "Jules", "person2": "Francesco"},
+                
+                {"person1": "Aurelia", "person2": "Danilo"},
+                {"person1": "Finnja", "person2": "Jamy"},
+                {"person1": "Jacky", "person2": "Alex"},
+                {"person1": "Jill", "person2": "Eugen"},
+                {"person1": "Kathleen", "person2": "Manuel"},
+                {"person1": "Melina", "person2": "Tommy"},
+                {"person1": "Sarah", "person2": "Josua"},
+                {"person1": "Walentina", "person2": "Salvatore"},
+                {"person1": "Vanessa", "person2": "Diogo"}
+            ],
+            "hits": 2
+        },
+        {
+            "title": "Matching Night 8",
+            "pairs": [
+                {"person1": "Jules", "person2": "Francesco"},
+                
+                {"person1": "Aurelia", "person2": "Danilo"},
+                {"person1": "Finnja", "person2": "Manuel"},
+                {"person1": "Jacky", "person2": "Eugen"},
+                {"person1": "Jill", "person2": "Salvatore"},
+                {"person1": "Melina", "person2": "Alex"},
+                {"person1": "Sarah", "person2": "Jamy"},
+                {"person1": "Walentina", "person2": "Josua"},
+                {"person1": "Vanessa", "person2": "Diogo"},
+                {"person1": "Steffi", "person2": "Tommy"}
+            ],
+            "hits": 1
+        },
+        {
+            "title": "Matching Night 9",
+            "pairs": [
+                {"person1": "Jules", "person2": "Francesco"},
+                
+                {"person1": "Aurelia", "person2": "Diogo"},
+                {"person1": "Finnja", "person2": "Tommy"},
+                {"person1": "Jill", "person2": "Danilo"},
+                {"person1": "Kathleen", "person2": "Manuel"},
+                {"person1": "Melina", "person2": "Eugen"},
+                {"person1": "Sarah", "person2": "Alex"},
+                {"person1": "Walentina", "person2": "Salvatore"},
+                {"person1": "Vanessa", "person2": "Josua"},
+                {"person1": "Jacky", "person2": "Jamy"}
+            ],
+            "hits": 4
+        }
+    ]
+}
