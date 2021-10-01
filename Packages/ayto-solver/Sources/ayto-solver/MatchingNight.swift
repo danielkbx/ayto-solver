@@ -2,6 +2,7 @@ import Foundation
 import Logging
 import Algorithms
 
+/// Contains the pairs and the number of correct matches of a matching night.
 public struct MatchingNight: CustomDebugStringConvertible {
     
     public var debugDescription: String {
@@ -24,10 +25,14 @@ public struct MatchingNight: CustomDebugStringConvertible {
         self.hits = hits
     }
     
+    /// Returns the persons involved in the matching night.
     public var persons: [Person] {
         pairs.reduce([]) { result, pair in result + [pair.person1, pair.person2] }
     }        
-            
+          
+    /// Creates match instanced by applying the number of known matches to the actual information about known matches.
+    ///
+    /// For example, if one match must be found in the matching night and 9 pairs are known not to be match, the left-over pair must be a match.
     internal func deducedMatches(by knownMatches: [Match], logger: Logger? = nil) throws -> [Match] {
         logger?.debug("Deducing from matching night", metadata: ["hits": "\(self.hits)", "matches": "\(knownMatches.count)"])
         
@@ -80,6 +85,7 @@ public struct MatchingNight: CustomDebugStringConvertible {
         return allMatches
     }
     
+    /// Returns all matches of the given list that are paired in the matching night.
     public func relevantMatches(of knownMatches: [Match]) -> [Match] {
         knownMatches.filter { pairs.contains($0.pair) }        
     }

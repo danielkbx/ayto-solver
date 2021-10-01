@@ -1,5 +1,9 @@
 import Foundation
 
+/// Describes a concrete match of two matchable persons including the result (is a match or is not a match)
+///
+/// This is the central information. For every information about a pair of persons that is known for sure, an instance
+/// should be created. Having no Match instance for a pair means that no information is known.
 public struct Match: Identifiable, Equatable, Hashable {
     
     enum UniqueError: Error {
@@ -9,9 +13,12 @@ public struct Match: Identifiable, Equatable, Hashable {
     
     public static func == (lhs: Match, rhs: Match) -> Bool { lhs.id == rhs.id }
         
-    public var id: String { "\(pair.person1.name.lowercased())-\(pair.person2.name.lowercased())-\(isMatch)" }
+    public var id: String { "\(pair.person1.name.lowercased())-\(pair.person2.name.lowercased())-\(isMatch)"
+    }
                 
+    /// The persons of the match.
     public let pair: Pair
+    /// True if the persons are a known match, false if the persons are known not a match.
     public let isMatch: Bool
     
     private init(_ person1: Person, _ person2: Person, isMatch: Bool) {
@@ -19,18 +26,22 @@ public struct Match: Identifiable, Equatable, Hashable {
         self.isMatch = isMatch
     }
     
+    /// Creates a match for the two given persons.
     public static func match(_ person1: Person, _ person2: Person) -> Match {
         Match(person1, person2, isMatch: true)
     }
     
+    /// Creates a match for the two persons where it is know that they are not a match.
     public static func noMatch(_ person1: Person, _ person2: Person) -> Match {
         Match(person1, person2, isMatch: false)
     }
     
+    /// Returns true if the match contains the given person.
     public func contains(_ person: Person) -> Bool {
         pair.contains(person)
     }
     
+    /// Returns true if the match contains any person of the given list.
     public func contains(anyOf persons: [Person]) -> Bool {
         for person in persons {
             if contains(person) { return true }
@@ -56,18 +67,22 @@ public extension Sequence where Element == Match {
         self.filter { $0.contains(person) }
     }
     
+    /// Returns a list of matches where at least of the persons of the given pair is part of the match.
     func matches(containingPersonsOf pair: Pair) -> [Match] {
         self.filter { $0.contains(pair.person1) || $0.contains(pair.person2) }
     }
     
+    /// Returns a list of matches where at least one of the given list of persons is part of.
     func matches(with persons: [Person]) -> [Match] {
         self.filter { $0.contains(anyOf: persons) }        
     }
     
+    /// Returns all matches that are know as being a match.
     func safeMatches() -> [Match] {
         filter { $0.isMatch }
     }
     
+    /// Returns the list of involved persons.
     func persons() -> [Person] {
         let persons = self.reduce([]) { persons, match in
             persons + [match.pair.person1, match.pair.person2]
@@ -75,6 +90,7 @@ public extension Sequence where Element == Match {
         return persons.unique()
     }
     
+    /// Returns a list of all pairs.
     func pairs() -> [Pair] {
         var pairs: [Pair] = []
         for match in self {
@@ -85,6 +101,12 @@ public extension Sequence where Element == Match {
         return pairs
     }
     
+    /// Removes duplicate entries.
+    ///
+    /// When multiple matches with the same pair are present, those matches must contain the same "isMatch"
+    /// information. If contrary matches are found (e.g. one indicates a known match, another one indicates a know not match)
+    /// an error is thrown.
+    /// This is used to detect input errors and interpolation by searching for conflict.
     func unique() throws -> [Match] {
         var matches: [Match] = []
         
@@ -103,9 +125,7 @@ public extension Sequence where Element == Match {
         for candidate in matches {
             let contradictoryMatches = matches.matches(with: candidate.pair.person1, and: candidate.pair.person2)
             if contradictoryMatches.count == 2 {
-                if contradictoryMatches.persons().with(role: .extra).count == 0 {
-                    throw Match.UniqueError.conflictingResult(pair: candidate.pair)
-                }
+                throw Match.UniqueError.conflictingResult(pair: candidate.pair)                
             }
         }
         

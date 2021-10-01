@@ -2,6 +2,10 @@ import Foundation
 import Logging
 import Algorithms
 
+/// Contains all information about a single game containing the persons, known matches and the combinations
+/// of the matching nights.
+///
+/// By infering information from the known data, a solution is calculated (if possible).
 public class Game {
     
     public enum ConstrainsError: Error {
@@ -36,9 +40,11 @@ public class Game {
         }
     }
     
+    /// Returns a list of persons that are known  to be part of a safe match (they already found the matching person).
     public var personsWithMatch: [Person] { knownMatches.safeMatches().persons() }
+    /// Returns the list of persons where no safe match is known.
     public var personsWithoutMatch: [Person] { persons.without(personsWithMatch) }
-    
+    /// Returns a list of pairs of a matching night where the match status is not yet known.
     private func unknownPairs(of night: MatchingNight) -> [Pair] {
         night.pairs.compactMap { self.knownMatches.matches(with: $0).first == nil ? $0 : nil }
     }
@@ -52,7 +58,18 @@ public class Game {
         }
         return result
     }
-           
+          
+    /// Tries to solve the game.
+    ///
+    /// This is done by
+    /// - eliminating pairs where a single person is already part of a safe match (because a person can only have one match)
+    /// - nominating a person if all other persons cannot be a match
+    /// - infer mandatory pairs from matching nights (e.g. if only one pair is unknown and it is known that one safe match is missing in that night)
+    ///
+    ///
+    /// - Parameter extendedCalculations: If true, combinations of potential pairs are build and solved. If this causes conflicts, those pairs can be eliminated.
+    /// - Parameter afterEachLoop: The block to be called after each calculation loop. Useful for debugging.
+    ///
     public func solve(logger: Logger? = nil, extendedCalculations: Bool = true, afterEachLoop: ((_ loop: Int, _ game: Game, _ nights: [MatchingNight]) -> Bool)? = nil) throws -> Solution {
         
         var loops = 0
@@ -174,7 +191,6 @@ public class Game {
                             if unknownPairs.count > 0 {
                                 let matchesOfNight = self.matches(of: night)
                                 let safeMatchesOfNight = matchesOfNight.safeMatches()
-                                let noMatchesOfNight = matchesOfNight.filter { !$0.isMatch }
                                 let pairsToResolve = night.hits - safeMatchesOfNight.count
                                 if pairsToResolve  == 1 {
                                     let pairCandidates = unknownPairs.uniquePermutations(ofCount: pairsToResolve)
@@ -214,7 +230,9 @@ public class Game {
         
         return Game.Solution(allMatches: knownMatches, calculationLoops: loops, exclusionTries: extendedTries)
     }
-    
+    /// Creates match instances for those pairs that cannot be a match because one person is already matched to another person.
+    ///
+    /// If this causes a conflict an error is thrown. This indicated faulty input data or a provoked conflict during extented calculation.
     @discardableResult
     internal func eliminatePersons(logger: Logger? = nil) throws -> [Match] {
         let matches = knownMatches.filter { $0.isMatch }
@@ -240,6 +258,9 @@ public class Game {
         return eliminatedMatches
     }
     
+    /// Creates a safe match for persons that have only one person as possible match.
+    ///
+    /// If this causes a conflict an error is thrown. This indicated faulty input data or a provoked conflict during extented calculation.
     @discardableResult
     internal func nominateSingleLeftOver(logger: Logger? = nil) throws -> [Match] {
         var nominatedLeftOverMatches: [Match] = []
@@ -259,9 +280,9 @@ public class Game {
             let otherPersons = self.persons.with(gender: person.gender.other)
             // and the regular persons of those
             let othersRegular = otherPersons.filter { $0.role == .regular }
-            // and than all the no matches with them
+            // and than all no matches with them
             let othersRegularNoMatches = matchesForPerson.filter { !$0.isMatch }
-            // get the persons the we do not have a negative match for
+            // get the persons that we do not have a negative match for
             let leftOverPersons = othersRegular.filter { candidate in
                 othersRegularNoMatches.matches(with: person, and: candidate).count == 0
             }
@@ -279,8 +300,11 @@ public class Game {
         return nominatedLeftOverMatches
     }
     
+    /// Creates the match for the two last persons.
+    ///
+    /// If this causes a conflict an error is thrown. This indicated faulty input data or a provoked conflict during extented calculation.
     @discardableResult
-    public func matchLastPair() throws -> [Match] {
+    private func matchLastPair() throws -> [Match] {
         var matches = self.knownMatches
         var lastPairMatches: [Match] = []
         
@@ -306,16 +330,20 @@ public class Game {
 }
 
 public extension Game {
-    
+    /// Contains the information of a solution of the game.
     struct Solution {
+        /// All known match information of the game.
         public let allMatches: [Match]
+        /// All safe matches of the game.
         public var matches: [Match] { allMatches.filter { $0.isMatch } }
+
         public let calculationLoops: Int
         public var exclusionTries: Int
     }
     
 }
 
+/// Contains information of a solution candidate. It is used to check if an assumed pair causes any conflicts so it can be ruled out.
 private class SolutionCandidate {
     let game: Game
     let assumedPairs: [Pair]
@@ -337,12 +365,7 @@ private class SolutionCandidate {
             let solution = try self.game.solve(logger: logger, extendedCalculations: false, afterEachLoop: afterEachLoop)
             self.solution = solution
         } catch {
-//            var meta: Logger.Metadata = [:]
-//            for (index, pair) in assumedPairs.enumerated() {
-//                meta["pair\(index)"] = "\(pair.person1.name)+\(pair.person2.name)"
-//            }
-//            logger?.info("solution candidate did produce conflict", metadata: meta)
-//            print(error)
+            self.solution = nil
         }
         
         return self.solution
