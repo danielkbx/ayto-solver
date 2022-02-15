@@ -192,7 +192,7 @@ public class Game {
                                 let matchesOfNight = self.matches(of: night)
                                 let safeMatchesOfNight = matchesOfNight.safeMatches()
                                 let pairsToResolve = night.hits - safeMatchesOfNight.count
-                                if pairsToResolve  == 1 {
+                                if pairsToResolve == 1 {
                                     let pairCandidates = unknownPairs.uniquePermutations(ofCount: pairsToResolve)
                                     
                                     for combination in pairCandidates {

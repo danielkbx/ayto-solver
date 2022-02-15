@@ -26,6 +26,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6513330527BC461B008EC124 /* season3.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = season3.json; sourceTree = "<group>"; };
 		653F0CB026FCCDFC0086B30E /* season2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = season2.json; sourceTree = "<group>"; };
 		653F0CB1270242430086B30E /* Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Table.swift; sourceTree = "<group>"; };
 		658F0F0226F0A05B0067B9AA /* ayto */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ayto; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +73,7 @@
 				65CA379F2707165300FA927C /* reality-stars-season1.json */,
 				653F0CB026FCCDFC0086B30E /* season2.json */,
 				653F0CB1270242430086B30E /* Table.swift */,
+				6513330527BC461B008EC124 /* season3.json */,
 			);
 			path = ayto;
 			sourceTree = "<group>";

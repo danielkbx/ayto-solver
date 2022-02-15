@@ -247,22 +247,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4290C8B6-71C1-4F20-88BC-EA8A3782BAFB"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
-            landmarkName = "solve(logger:extendedCalculations:afterEachLoop:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "1A821B8F-F711-4142-BCB3-E19FD39981B0"
             shouldBeEnabled = "No"
             condition = "night.title == &quot;Matching Night 9&quot;"
@@ -330,22 +314,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B24A97BB-1A00-49CB-B172-5BF8A758A6B0"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "171"
-            endingLineNumber = "171"
-            landmarkName = "solve(logger:extendedCalculations:afterEachLoop:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "6117B7CB-7FDD-4D3E-A6AC-6C7FC670D9AD"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -404,6 +372,22 @@
             startingLineNumber = "60"
             endingLineNumber = "60"
             landmarkName = "isImpossible(by:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A9E7DE79-683F-417E-9BB7-C4608E8801B1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "158"
+            endingLineNumber = "158"
+            landmarkName = "solve(logger:extendedCalculations:afterEachLoop:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

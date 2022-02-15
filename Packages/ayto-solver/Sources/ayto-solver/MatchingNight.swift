@@ -34,7 +34,7 @@ public struct MatchingNight: CustomDebugStringConvertible {
     ///
     /// For example, if one match must be found in the matching night and 9 pairs are known not to be match, the left-over pair must be a match.
     internal func deducedMatches(by knownMatches: [Match], logger: Logger? = nil) throws -> [Match] {
-        logger?.debug("Deducing from matching night", metadata: ["hits": "\(self.hits)", "matches": "\(knownMatches.count)"])
+        logger?.debug("Deducing from matching night \"\(self.title)\"", metadata: ["hits": "\(self.hits)", "matches": "\(knownMatches.count)"])
         
         for person in persons {
             if pairs.filter({ $0.contains(person )}).count > 1 {

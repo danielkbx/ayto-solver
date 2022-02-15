@@ -1,0 +1,184 @@
+{
+    "title": "Season 3",
+    "persons": [
+        {"name": "Mike", "gender": "male"},
+        {"name": "Leon", "gender": "male"},
+        {"name": "Jordi", "gender": "male"},
+        {"name": "Antonino", "gender": "male"},
+        {"name": "Max", "gender": "male"},
+        {"name": "Dustin", "gender": "male"},
+        {"name": "Tim", "gender": "male"},
+        {"name": "William", "gender": "male"},
+        {"name": "Marius", "gender": "male"},
+        {"name": "Andre", "gender": "male"},
+        {"name": "Dana", "gender": "female"},
+        {"name": "Kerstin", "gender": "female"},
+        {"name": "Estelle", "gender": "female"},
+        {"name": "Jessica", "gender": "female"},
+        {"name": "Jolina", "gender": "female"},
+        {"name": "Monami", "gender": "female"},
+        {"name": "Marie", "gender": "female"},
+        {"name": "Zaira", "gender": "female"},
+        {"name": "Isabelle", "gender": "female"},
+        {"name": "Rafaela", "gender": "female"},
+        {"name": "Desiree", "gender": "female", "role": "extra"}
+    ],
+    "matches": [
+        {"person1": "Mike", "person2": "Jessica", "match": false},
+        {"person1": "Leon", "person2": "Monami", "match": false},
+        {"person1": "Andre", "person2": "Rafaela", "match": false},
+        {"person1": "Antonino", "person2": "Monami", "match": false},
+        {"person1": "Max", "person2": "Jessica", "match": false},
+        {"person1": "Marius", "person2": "Zaira", "match": true},
+        {"person1": "Jordi", "person2": "Rafaela", "match": false},
+        {"person1": "Max", "person2": "Kerstin", "match": false},
+        {"person1": "Dustin", "person2": "Isabelle", "match": false}
+    ],
+    "nights": [
+        {
+            "title": "Nacht 1",
+            "pairs": [
+                {"person1": "Leon", "person2": "Jessica"},
+                {"person1": "Mike", "person2": "Jolina"},
+                {"person1": "Max", "person2": "Kerstin"},
+                {"person1": "Antonino", "person2": "Monami"},
+                {"person1": "Tim", "person2": "Marie"},
+                {"person1": "Dustin", "person2": "Zaira"},
+                {"person1": "William", "person2": "Dana"},
+                {"person1": "Jordi", "person2": "Estelle"},
+                {"person1": "Marius", "person2": "Isabelle"},
+                {"person1": "Andre", "person2": "Rafaela"}
+            ],
+            "hits": 3
+        },
+        {
+            "title": "Nacht 2",
+            "pairs": [
+                {"person1": "Tim", "person2": "Jessica"},
+                {"person1": "Mike", "person2": "Jolina"},
+                {"person1": "Max", "person2": "Kerstin"},
+                {"person1": "Antonino", "person2": "Monami"},
+                {"person1": "Marius", "person2": "Marie"},
+                {"person1": "Jordi", "person2": "Zaira"},
+                {"person1": "Andre", "person2": "Dana"},
+                {"person1": "Leon", "person2": "Estelle"},
+                {"person1": "Dustin", "person2": "Isabelle"},
+                {"person1": "William", "person2": "Rafaela"}
+            ],
+            "hits": 2
+        },
+        {
+            "title": "Nacht 3",
+            "pairs": [
+                {"person1": "Jordi", "person2": "Jessica"},
+                {"person1": "Mike", "person2": "Jolina"},
+                {"person1": "Antonino", "person2": "Kerstin"},
+                {"person1": "Max", "person2": "Monami"},
+                {"person1": "Tim", "person2": "Marie"},
+                {"person1": "Dustin", "person2": "Zaira"},
+                {"person1": "William", "person2": "Dana"},
+                {"person1": "Leon", "person2": "Estelle"},
+                {"person1": "Marius", "person2": "Isabelle"},
+                {"person1": "Andre", "person2": "Rafaela"}
+            ],
+            "hits": 2
+        },
+        {
+            "title": "Nacht 4",
+            "pairs": [
+                {"person1": "Marius", "person2": "Jessica"},
+                {"person1": "Mike", "person2": "Jolina"},
+                {"person1": "Tim", "person2": "Kerstin"},
+                {"person1": "Antonino", "person2": "Monami"},
+                {"person1": "Max", "person2": "Marie"},
+                {"person1": "Dustin", "person2": "Zaira"},
+                {"person1": "William", "person2": "Dana"},
+                {"person1": "Leon", "person2": "Estelle"},
+                {"person1": "Andre", "person2": "Isabelle"},
+                {"person1": "Jordi", "person2": "Rafaela"}
+            ],
+            "hits": 3
+        },
+        {
+            "title": "Nacht 5",
+            "pairs": [
+                {"person1": "Leon", "person2": "Jessica"},
+                {"person1": "Andre", "person2": "Jolina"},
+                {"person1": "Antonino", "person2": "Kerstin"},
+                {"person1": "Max", "person2": "Monami"},
+                {"person1": "Tim", "person2": "Desiree"},
+                {"person1": "Jordi", "person2": "Zaira"},
+                {"person1": "William", "person2": "Dana"},
+                {"person1": "Mike", "person2": "Estelle"},
+                {"person1": "Dustin", "person2": "Isabelle"},
+                {"person1": "Marius", "person2": "Rafaela"}
+            ],
+            "hits": 2
+        },
+        {
+            "title": "Nacht 6",
+            "pairs": [
+                {"person1": "Leon", "person2": "Jessica"},
+                {"person1": "Andre", "person2": "Marie"},
+                {"person1": "Antonino", "person2": "Dana"},
+                {"person1": "Max", "person2": "Kerstin"},
+                {"person1": "Tim", "person2": "Jolina"},
+                {"person1": "Jordi", "person2": "Desiree"},
+                {"person1": "William", "person2": "Rafaela"},
+                {"person1": "Mike", "person2": "Estelle"},
+                {"person1": "Dustin", "person2": "Isabelle"},
+                {"person1": "Marius", "person2": "Zaira"}
+            ],
+            "hits": 4
+        },
+        {
+            "title": "Nacht 7",
+            "pairs": [
+                {"person1": "Leon", "person2": "Jessica"},
+                {"person1": "Andre", "person2": "Desiree"},
+                {"person1": "Antonino", "person2": "Dana"},
+                {"person1": "Max", "person2": "Marie"},
+                {"person1": "Tim", "person2": "Kerstin"},
+                {"person1": "Jordi", "person2": "Monami"},
+                {"person1": "William", "person2": "Rafaela"},
+                {"person1": "Mike", "person2": "Jolina"},
+                {"person1": "Dustin", "person2": "Isabelle"},
+                {"person1": "Marius", "person2": "Zaira"}
+            ],
+            "hits": 6
+        },
+        {
+            "title": "Nacht 8",
+            "pairs": [
+                {"person1": "Leon", "person2": "Jessica"},
+                {"person1": "Andre", "person2": "Marie"},
+                {"person1": "Antonino", "person2": "Dana"},
+                {"person1": "Max", "person2": "Kerstin"},
+                {"person1": "Tim", "person2": "Jolina"},
+                {"person1": "Jordi", "person2": "Monami"},
+                {"person1": "William", "person2": "Rafaela"},
+                {"person1": "Mike", "person2": "Estelle"},
+                {"person1": "Dustin", "person2": "Isabelle"},
+                {"person1": "Marius", "person2": "Zaira"}
+            ],
+            "hits": 4
+        },
+        {
+            "title": "Nacht 9",
+            "pairs": [
+                {"person1": "Leon", "person2": "Jessica"},
+                {"person1": "Andre", "person2": "Desiree"},
+                {"person1": "Antonino", "person2": "Isabelle"},
+                {"person1": "Max", "person2": "Rafaela"},
+                {"person1": "Tim", "person2": "Jolina"},
+                {"person1": "Jordi", "person2": "Monami"},
+                {"person1": "William", "person2": "Marie"},
+                {"person1": "Mike", "person2": "Estelle"},
+                {"person1": "Dustin", "person2": "Dana"},
+                {"person1": "Marius", "person2": "Zaira"}
+            ],
+            "hits": 2
+        }
+    ]
+}
+
