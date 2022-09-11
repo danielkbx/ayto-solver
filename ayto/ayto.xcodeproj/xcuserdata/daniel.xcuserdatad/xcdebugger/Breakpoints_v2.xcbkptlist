@@ -378,16 +378,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A9E7DE79-683F-417E-9BB7-C4608E8801B1"
-            shouldBeEnabled = "Yes"
+            uuid = "AF3C3426-D0E2-4F65-A9C2-96CFF0BD81F7"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../Packages/ayto-solver/Sources/ayto-solver/Game.swift"
+            filePath = "ayto/ayto.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "solve(logger:extendedCalculations:afterEachLoop:)"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "printMatrix(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

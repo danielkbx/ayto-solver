@@ -1,0 +1,96 @@
+
+{
+    "title": "Realitystars in Love Season 2",
+    "persons": [
+        {"name": "Max", "gender": "male"},
+        {"name": "Michael", "gender": "male"},
+        {"name": "Martin", "gender": "male"},
+        {"name": "Maurice", "gender": "male"},
+        {"name": "Calvin", "gender": "male"},
+        {"name": "Amadu", "gender": "male"},
+        {"name": "Pharell", "gender": "male"},
+        {"name": "Lukas", "gender": "male"},
+        {"name": "Fabio", "gender": "male"},
+        {"name": "Luca", "gender": "male"},
+        {"name": "Felix", "gender": "male", "role": "extra"},
+        
+        {"name": "Franzi", "gender": "female"},
+        {"name": "Anna", "gender": "female"},
+        {"name": "Celina", "gender": "female"},
+        {"name": "Ricarda", "gender": "female"},
+        {"name": "Gina", "gender": "female"},
+        {"name": "Cecilia", "gender": "female"},
+        {"name": "Karina", "gender": "female"},
+        {"name": "Isabelle", "gender": "female"},
+        {"name": "Luisa", "gender": "female"},
+        {"name": "Zoe", "gender": "female"}
+    ],
+    "matches": [
+        {"person1": "Martin", "person2": "Zoe", "match": false},
+        {"person1": "Pharell", "person2": "Karina", "match": false},
+        {"person1": "Lukas", "person2": "Celina", "match": false},
+        {"person1": "Lukas", "person2": "Luisa", "match": true},
+        {"person1": "Felix", "person2": "Ricarda", "match": false}
+    ],
+    "nights": [{
+        "title": "Matching Night 1",
+        "pairs": [
+            {"person1": "Max", "person2": "Franzi"},
+            {"person1": "Michael", "person2": "Anna"},
+            {"person1": "Martin", "person2": "Celina"},
+            {"person1": "Maurice", "person2": "Ricarda"},
+            {"person1": "Calvin", "person2": "Gina"},
+            {"person1": "Amadu", "person2": "Cecilia"},
+            {"person1": "Pharell", "person2": "Karina"},
+            {"person1": "Lukas", "person2": "Isabelle"},
+            {"person1": "Fabio", "person2": "Luisa"},
+            {"person1": "Luca", "person2": "Zoe"}
+        ],
+        "hits": 3
+    },{
+        "title": "Matching Night 2",
+        "pairs": [
+            {"person1": "Luca", "person2": "Franzi"},
+            {"person1": "Michael", "person2": "Anna"},
+            {"person1": "Max", "person2": "Celina"},
+            {"person1": "Maurice", "person2": "Ricarda"},
+            {"person1": "Amadu", "person2": "Gina"},
+            {"person1": "Pharell", "person2": "Cecilia"},
+            {"person1": "Fabio", "person2": "Karina"},
+            {"person1": "Martin", "person2": "Isabelle"},
+            {"person1": "Calvin", "person2": "Luisa"},
+            {"person1": "Lukas", "person2": "Zoe"}
+        ],
+        "hits": 2
+    },{
+        "title": "Matching Night 3",
+        "pairs": [
+            {"person1": "Luca", "person2": "Isabelle"},
+            {"person1": "Michael", "person2": "Gina"},
+            {"person1": "Max", "person2": "Zoe"},
+            {"person1": "Maurice", "person2": "Ricarda"},
+            {"person1": "Amadu", "person2": "Cecilia"},
+            {"person1": "Pharell", "person2": "Luisa"},
+            {"person1": "Fabio", "person2": "Celina"},
+            {"person1": "Martin", "person2": "Anna"},
+            {"person1": "Calvin", "person2": "Karina"},
+            {"person1": "Lukas", "person2": "Franzi"}
+        ],
+        "hits": 3
+    },
+    {
+        "title": "Matching Night 5",
+        "pairs": [
+            {"person1": "Maurice", "person2": "Isabelle"},
+            {"person1": "Felix", "person2": "Gina"},
+            {"person1": "Luca", "person2": "Zoe"},
+            {"person1": "Max", "person2": "Ricarda"},
+            {"person1": "Amadu", "person2": "Cecilia"},
+            {"person1": "Fabio", "person2": "Celina"},
+            {"person1": "Pharell", "person2": "Anna"},
+            {"person1": "Martin", "person2": "Karina"},
+            {"person1": "Michael", "person2": "Franzi"}
+        ],
+        "hits": 2
+    }]
+}

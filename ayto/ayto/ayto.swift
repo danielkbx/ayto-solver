@@ -125,7 +125,7 @@ struct ayto: ParsableCommand {
     }
     
     func printMatrix(_ game: Game) {
-        var columns = game.persons.with(gender: .male).sorted(by: { $0.name < $1.name })
+        var columns = game.persons.with(gender: .male).with(role: .regular).sorted(by: { $0.name < $1.name })
         columns += game.persons.with(gender: .male).with(role: .extra).sorted(by: { $0.name < $1.name })
         var rows = game.persons.with(gender: .female).with(role: .regular).sorted(by: { $0.name < $1.name })
         rows += game.persons.with(gender: .female).with(role: .extra).sorted(by: { $0.name < $1.name })
