@@ -10,7 +10,7 @@ public struct Match: Identifiable, Equatable, Hashable {
         case conflictingResult(pair: Pair)
         case contradictory(matches: [Match])
     }
-    
+            
     public static func == (lhs: Match, rhs: Match) -> Bool { lhs.id == rhs.id }
         
     public var id: String { "\(pair.person1.name.lowercased())-\(pair.person2.name.lowercased())-\(isMatch)"

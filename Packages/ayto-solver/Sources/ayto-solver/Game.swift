@@ -58,7 +58,7 @@ public class Game {
         }
         return result
     }
-          
+    
     /// Tries to solve the game.
     ///
     /// This is done by
@@ -72,14 +72,17 @@ public class Game {
     ///
     public func solve(logger: Logger? = nil, extendedCalculations: Bool = true, afterEachLoop: ((_ loop: Int, _ game: Game, _ nights: [MatchingNight]) -> Bool)? = nil) throws -> Solution {
         
+        let solveQqueue = DispatchQueue(label: "candidates", qos: .default, attributes: [.concurrent])
+        let writeQueue = DispatchQueue(label: "write", qos: .default)
+        
         var loops = 0
         var extendedTries = 0
         
         var didExcludeSomething: Bool = false
         var nightsWithDeducedInfo: [MatchingNight] = []
+        
         repeat {
             didExcludeSomething = false
-            
             
             var didDeduceSomething: Bool = false
             repeat {
@@ -115,7 +118,7 @@ public class Game {
                                     break
                                 }
                             }
-                                                                                    
+                            
                             if newMatches.count > 0 {
                                 self.knownMatches = try deducedMatches.unique()
                                 nightsWithDeducedInfo.append(night)
@@ -188,37 +191,34 @@ public class Game {
                         for night in matchingNights {
                             var solutionCandidates: [SolutionCandidate] = []
                             let unknownPairs = self.unknownPairs(of: night)
-                            if unknownPairs.count > 0 {
-                                let matchesOfNight = self.matches(of: night)
-                                let safeMatchesOfNight = matchesOfNight.safeMatches()
-                                let pairsToResolve = night.hits - safeMatchesOfNight.count
-                                if pairsToResolve == 1 {
-                                    let pairCandidates = unknownPairs.uniquePermutations(ofCount: pairsToResolve)
-                                    
-                                    for combination in pairCandidates {
-                                        if let solutionCandidate = SolutionCandidate(game: self, assumedPairs: Array(combination)) {
-                                            solutionCandidates.append(solutionCandidate)
+                            if unknownPairs.count > 0, unknownPairs.count <= 5 {
+                                for pairCandidate in unknownPairs {
+                                    if let solutionCandidate = SolutionCandidate(game: self, assumedPairs: [pairCandidate]) {
+                                        solutionCandidates.append(solutionCandidate)
+                                    }
+                                }
+                                                                
+//                                Swift.print("Checking \(solutionCandidates.count) solution candidates")
+                                var excludedPairs: [Pair] = []
+                                
+                                let dispatchQueue = DispatchGroup()
+                                for solutionCandidate in solutionCandidates {
+                                    dispatchQueue.enter()
+                                    solveQqueue.async {
+                                        let solution = solutionCandidate.solve(logger: logger, afterEachLoop: afterEachLoop)
+                                        writeQueue.async {
+                                            if solution == nil {
+                                                excludedPairs.append(contentsOf: solutionCandidate.assumedPairs)
+                                            }
+                                            dispatchQueue.leave()
                                         }
                                     }
                                 }
-                            }
-                            
-                            for solutionCandidate in solutionCandidates {
-                                let solution = solutionCandidate.solve(logger: logger, afterEachLoop: afterEachLoop)
-                                if solution == nil {
-                                    do {
-                                        self.knownMatches = try (self.knownMatches + solutionCandidate.assumedPairs.map({ Match.noMatch($0.person1, $0.person2) })).unique()
-                                        didExcludeSomething = true
-                                    } catch {
-                                        if let error = error as? Match.UniqueError {
-                                            switch error {
-                                            case .conflictingResult(let pair): throw SolveError.conflictingMatches(pair: pair)
-                                            case .contradictory(let matches): throw SolveError.contradictoryMatches(matches: matches)
-                                            }
-                                        } else {
-                                            throw error
-                                        }
-                                    }
+                                dispatchQueue.wait()
+                                if excludedPairs.count > 0 {
+                                    self.knownMatches += excludedPairs.map { Match.noMatch($0.person1, $0.person2) }
+                                    self.knownMatches = try self.knownMatches.unique()
+                                    didExcludeSomething = true
                                 }
                             }
                         }
@@ -227,6 +227,62 @@ public class Game {
             }
             
         } while didExcludeSomething
+        
+        if extendedCalculations {
+            repeat {
+                didExcludeSomething = false
+                let regularPersonsWithoutMath = persons.with(role: .regular).without(personsWithMatch)
+                if  regularPersonsWithoutMath.count > 0, regularPersonsWithoutMath.count <= 12 {
+                    // try one last thing
+                    var pairs: [Pair] = []
+                    let males = regularPersonsWithoutMath.with(gender: .male)
+                    let females = regularPersonsWithoutMath.with(gender: .female)
+                    guard males.count == females.count else {
+                        throw Game.ConstrainsError.personsGenderNotBalanced(male: males.count, female: females.count)
+                    }
+                    
+                    for male in males { for female in females {
+                        pairs.append(Pair(male, female))
+                    } }
+                    
+                    var excludedPairs: [Pair] = []
+                    let dispatchGroup = DispatchGroup()
+//                    Swift.print("Checking \(pairs.count) pairs")
+                    for candidate in pairs {
+                        dispatchGroup.enter()
+                        solveQqueue.async {
+                            if let solutionCandidate = SolutionCandidate(game: self, assumedPairs: [candidate]) {
+                                extendedTries += 1
+                                let solution = solutionCandidate.solve(logger: logger, afterEachLoop: afterEachLoop)
+                                writeQueue.async {
+                                    if solution == nil {
+                                        excludedPairs.append(contentsOf: solutionCandidate.assumedPairs)
+                                    }
+                                    dispatchGroup.leave()
+                                }
+                            }
+                        }
+                    }
+                    dispatchGroup.wait()
+                    if excludedPairs.count > 0 {
+                        self.knownMatches += excludedPairs.map { Match.noMatch($0.person1, $0.person2) }
+                        self.knownMatches = try self.knownMatches.unique()
+                        didExcludeSomething = true
+                    }
+                }
+                
+                if didExcludeSomething {
+                    if let eliminatedMatches = try? eliminatePersons(logger: logger), eliminatedMatches.count > 0 {
+                        didExcludeSomething = true
+                    }
+                    if let nominatedLeftOvers = try? nominateSingleLeftOver(logger: logger), nominatedLeftOvers.count > 0 {
+                        didExcludeSomething = true
+                    }
+                }
+            } while didExcludeSomething
+            
+            
+        }
         
         return Game.Solution(allMatches: knownMatches, calculationLoops: loops, exclusionTries: extendedTries)
     }
@@ -293,7 +349,7 @@ public class Game {
                 let newMatch = Match.match(person, leftOverPerson)
                 matches.append(newMatch)
                 nominatedLeftOverMatches.append(newMatch)
-            }                        
+            }
         }
         
         self.knownMatches = try matches.unique()
@@ -336,7 +392,7 @@ public extension Game {
         public let allMatches: [Match]
         /// All safe matches of the game.
         public var matches: [Match] { allMatches.filter { $0.isMatch } }
-
+        
         public let calculationLoops: Int
         public var exclusionTries: Int
     }
@@ -361,13 +417,7 @@ private class SolutionCandidate {
     }
     
     func solve(logger: Logger?, afterEachLoop: ((_ loop: Int, _ game: Game, _ nights: [MatchingNight]) -> Bool)? = nil) -> Game.Solution? {
-        do {
-            let solution = try self.game.solve(logger: logger, extendedCalculations: false, afterEachLoop: afterEachLoop)
-            self.solution = solution
-        } catch {
-            self.solution = nil
-        }
-        
+        self.solution = try? self.game.solve(logger: logger, extendedCalculations: false, afterEachLoop: afterEachLoop)
         return self.solution
     }
 }

@@ -30,7 +30,10 @@
         {"person1": "Pharell", "person2": "Karina", "match": false},
         {"person1": "Lukas", "person2": "Celina", "match": false},
         {"person1": "Lukas", "person2": "Luisa", "match": true},
-        {"person1": "Felix", "person2": "Ricarda", "match": false}
+        {"person1": "Felix", "person2": "Ricarda", "match": false},
+        {"person1": "Pharell", "person2": "Isabelle", "match": false},
+        {"person1": "Amadu", "person2": "Cecilia", "match": true},
+        {"person1": "Michael", "person2": "Anna", "match": true}
     ],
     "nights": [{
         "title": "Matching Night 1",
@@ -90,6 +93,45 @@
             {"person1": "Pharell", "person2": "Anna"},
             {"person1": "Martin", "person2": "Karina"},
             {"person1": "Michael", "person2": "Franzi"}
+        ],
+        "hits": 2
+    },{
+        "title": "Matching Night 6",
+        "pairs": [
+            {"person1": "Martin", "person2": "Isabelle"},
+            {"person1": "Pharell", "person2": "Ricarda"},
+            {"person1": "Maurice", "person2": "Cecilia"},
+            {"person1": "Michael", "person2": "Anna"},
+            {"person1": "Max", "person2": "Franzi"},
+            {"person1": "Fabio", "person2": "Celina"},
+            {"person1": "Felix", "person2": "Gina"},
+            {"person1": "Calvin", "person2": "Karina"},
+            {"person1": "Luca", "person2": "Zoe"}
+        ],
+        "hits": 2
+    },{
+        "title": "Matching Night 7",
+        "pairs": [
+            {"person1": "Martin", "person2": "Isabelle"},
+            {"person1": "Pharell", "person2": "Ricarda"},
+            {"person1": "Michael", "person2": "Anna"},
+            {"person1": "Max", "person2": "Franzi"},
+            {"person1": "Fabio", "person2": "Celina"},
+            {"person1": "Felix", "person2": "Gina"},
+            {"person1": "Calvin", "person2": "Karina"},
+            {"person1": "Luca", "person2": "Zoe"}
+        ],
+        "hits": 2
+    },{
+        "title": "Matching Night 8",
+        "pairs": [
+            {"person1": "Felix", "person2": "Isabelle"},
+            {"person1": "Pharell", "person2": "Ricarda"},
+            {"person1": "Calvin", "person2": "Franzi"},
+            {"person1": "Luca", "person2": "Celina"},
+            {"person1": "Fabio", "person2": "Gina"},
+            {"person1": "Martin", "person2": "Karina"},
+            {"person1": "Maurice", "person2": "Zoe"}
         ],
         "hits": 2
     }]
