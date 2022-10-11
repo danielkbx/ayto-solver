@@ -4,7 +4,6 @@ import Logging
 import ArgumentParser
 import Darwin
 
-@main
 struct ayto: ParsableCommand {
         
     enum InputError: Error {
@@ -167,3 +166,5 @@ struct ayto: ParsableCommand {
     }
     
 }
+
+ayto.main()

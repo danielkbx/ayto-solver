@@ -72,7 +72,7 @@ public class Game {
     ///
     public func solve(logger: Logger? = nil, extendedCalculations: Bool = true, afterEachLoop: ((_ loop: Int, _ game: Game, _ nights: [MatchingNight]) -> Bool)? = nil) throws -> Solution {
         
-        let solveQqueue = DispatchQueue(label: "candidates", qos: .default, attributes: [.concurrent])
+        let solveQueue = DispatchQueue(label: "candidates", qos: .default, attributes: [.concurrent])
         let writeQueue = DispatchQueue(label: "write", qos: .default)
         
         var loops = 0
@@ -204,7 +204,7 @@ public class Game {
                                 let dispatchQueue = DispatchGroup()
                                 for solutionCandidate in solutionCandidates {
                                     dispatchQueue.enter()
-                                    solveQqueue.async {
+                                    solveQueue.async {
                                         let solution = solutionCandidate.solve(logger: logger, afterEachLoop: afterEachLoop)
                                         writeQueue.async {
                                             if solution == nil {
@@ -250,7 +250,7 @@ public class Game {
 //                    Swift.print("Checking \(pairs.count) pairs")
                     for candidate in pairs {
                         dispatchGroup.enter()
-                        solveQqueue.async {
+                        solveQueue.async {
                             if let solutionCandidate = SolutionCandidate(game: self, assumedPairs: [candidate]) {
                                 extendedTries += 1
                                 let solution = solutionCandidate.solve(logger: logger, afterEachLoop: afterEachLoop)
@@ -360,7 +360,7 @@ public class Game {
     ///
     /// If this causes a conflict an error is thrown. This indicated faulty input data or a provoked conflict during extented calculation.
     @discardableResult
-    private func matchLastPair() throws -> [Match] {
+    internal func matchLastPair() throws -> [Match] {
         var matches = self.knownMatches
         var lastPairMatches: [Match] = []
         

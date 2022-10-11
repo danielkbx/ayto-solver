@@ -5,16 +5,16 @@ import PackageDescription
 
 let package = Package(
     name: "ayto-solver",
-    platforms: [.macOS(.v11), .iOS(.v14)],
+    platforms: [.macOS(.v11)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "ayto-solver",
-            targets: ["ayto-solver"]),
+        .library(name: "ayto-solver", targets: ["ayto-solver"]),
+        .executable(name: "ayto", targets: ["ayto"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,10 +23,9 @@ let package = Package(
             name: "ayto-solver",
             dependencies: [
                 .product(name: "Logging", package: "swift-log"),
-                .product(name: "Algorithms", package: "swift-algorithms")
+                .product(name: "Algorithms", package: "swift-algorithms"),
             ]),
-        .testTarget(
-            name: "ayto-solverTests",
-            dependencies: ["ayto-solver"]),
+        .testTarget(name: "ayto-solverTests", dependencies: ["ayto-solver"]),
+        .target(name: "ayto", dependencies: ["ayto-solver", .productItem(name: "ArgumentParser", package: "swift-argument-parser")])
     ]
 )
