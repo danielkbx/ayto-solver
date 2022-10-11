@@ -1,4 +1,4 @@
 import Foundation
 
-/// The namespace containg symbols used to read from JSON files.
+/// The namespace containing symbols used to read from JSON files.
 public enum Transport {}
