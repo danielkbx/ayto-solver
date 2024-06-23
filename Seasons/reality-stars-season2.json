@@ -33,7 +33,8 @@
         {"person1": "Felix", "person2": "Ricarda", "match": false},
         {"person1": "Pharell", "person2": "Isabelle", "match": false},
         {"person1": "Amadu", "person2": "Cecilia", "match": true},
-        {"person1": "Michael", "person2": "Anna", "match": true}
+        {"person1": "Michael", "person2": "Anna", "match": true},
+        {"person1": "Pharell", "person2": "Ricarda", "match": false}
     ],
     "nights": [{
         "title": "Matching Night 1",
@@ -134,5 +135,17 @@
             {"person1": "Maurice", "person2": "Zoe"}
         ],
         "hits": 2
+    },{
+        "title": "Matching Night 9",
+        "pairs": [
+            {"person1": "Felix", "person2": "Isabelle"},
+            {"person1": "Pharell", "person2": "Zoe"},
+            {"person1": "Calvin", "person2": "Gina"},
+            {"person1": "Fabio", "person2": "Celina"},
+            {"person1": "Martin", "person2": "Karina"},
+            {"person1": "Maurice", "person2": "Ricarda"},
+            {"person1": "Max", "person2": "Franzi"}
+        ],
+        "hits": 4
     }]
 }

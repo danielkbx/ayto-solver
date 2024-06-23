@@ -271,14 +271,32 @@ public class Game {
                     }
                 }
                 
-                if didExcludeSomething {
-                    if let eliminatedMatches = try? eliminatePersons(logger: logger), eliminatedMatches.count > 0 {
-                        didExcludeSomething = true
-                    }
-                    if let nominatedLeftOvers = try? nominateSingleLeftOver(logger: logger), nominatedLeftOvers.count > 0 {
-                        didExcludeSomething = true
-                    }
+                if let eliminatedMatches = try? eliminatePersons(logger: logger), eliminatedMatches.count > 0 {
+                    didExcludeSomething = true
                 }
+                if let nominatedLeftOvers = try? nominateSingleLeftOver(logger: logger), nominatedLeftOvers.count > 0 {
+                    didExcludeSomething = true
+                }
+                
+//                for night in matchingNights {
+//                    let deducedMatches = try night.deducedMatches(by: self.knownMatches, logger: logger)
+//                    let difference = deducedMatches.difference(from: self.knownMatches)
+//                    var newMatches: [Match] = []
+//                    for change in difference {
+//                        switch change {
+//                        case .insert(_, let element, _):
+//                            newMatches.append(element)
+//                        default:
+//                            break
+//                        }
+//                    }
+//
+//                    if newMatches.count > 0 {
+//                        self.knownMatches = try deducedMatches.unique()
+//                        didExcludeSomething = true
+//                    }
+//                }
+                
             } while didExcludeSomething
             
             
